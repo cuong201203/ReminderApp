@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/itemManageCategory"
+        android:title="Quản lý danh mục" />
+    <item
+        android:id="@+id/itemOrderReminder"
+        android:title="Sắp xếp theo">
+        <menu>
+            <item
+                android:id="@+id/itemByReminderTime"
+                android:title="Thời gian nhắc nhở">
+                <menu>
+                    <item
+                        android:id="@+id/itemNewestReminderTIme"
+                        android:title="Mới nhất" />
+                    <item
+                        android:id="@+id/itemOldestReminderTime"
+                        android:title="Cũ nhất" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/itemByCreatedTime"
+                android:title="Thời gian tạo">
+                <menu>
+                    <item
+                        android:id="@+id/itemNewestCreatedTime"
+                        android:title="Mới nhất" />
+                    <item
+                        android:id="@+id/itemOldestCreatedTime"
+                        android:title="Cũ nhất" />
+                </menu>
+            </item>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/itemManageNotification"
+        android:title="Quản lý thông báo" />
+</menu>

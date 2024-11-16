@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/itemOrderCategory"
+        android:title="Sắp xếp theo" >
+        <menu >
+            <item
+                android:id="@+id/itemByCategoryTitle"
+                android:title="Tên danh mục">
+                <menu>
+                    <item
+                        android:id="@+id/itemCategoryTitleAZ"
+                        android:title="A - Z" />
+                    <item
+                        android:id="@+id/itemCategoryTitleZA"
+                        android:title="Z - A" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/itemTotalReminders"
+                android:title="Số lượng nhắc nhở">
+                <menu>
+                    <item
+                        android:id="@+id/itemTotalRemindersDesc"
+                        android:title="Giảm dần" />
+                    <item
+                        android:id="@+id/itemTotalRemindersAsc"
+                        android:title="Tăng dần" />
+                </menu>
+            </item>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/actionSearchCategory"
+        android:icon="@drawable/ic_search_black_24dp"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="collapseActionView|always"
+        android:title="Search" />
+    <item
+        android:id="@+id/actionDeleteCategory"
+        android:icon="@drawable/ic_baseline_delete_24"
+        android:title="Xóa"
+        android:visible="false"
+        app:showAsAction="always" />
+</menu>
