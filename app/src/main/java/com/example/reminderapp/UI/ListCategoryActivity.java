@@ -41,7 +41,7 @@ public class ListCategoryActivity extends AppCompatActivity {
     ArrayList<Category> listCategory = new ArrayList<>();
     CategoryAdapter adapter;
     FloatingActionButton btnAddCategoryNavigate;
-    MenuItem searchItem, deleteItem;
+    MenuItem searchItem, deleteCategoriesItem;
     TextView txtNoResultsForCategory;
 
     @Override
@@ -74,7 +74,7 @@ public class ListCategoryActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_category, menu);
         searchItem = menu.findItem(R.id.itemSearchCategory);
-        deleteItem = menu.findItem(R.id.itemDeleteCategories);
+        deleteCategoriesItem = menu.findItem(R.id.itemDeleteCategories);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -85,6 +85,8 @@ public class ListCategoryActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 doSearch(newText);
+                boolean hasSelectedItems = !adapter.getSelectedCategoryIds().isEmpty();
+                updateSearchDeleteButtonVisibility(hasSelectedItems);
                 return false;
             }
         });
@@ -114,9 +116,9 @@ public class ListCategoryActivity extends AppCompatActivity {
     }
 
     public void updateSearchDeleteButtonVisibility(boolean isVisible) {
-        if (searchItem != null && deleteItem != null) {
+        if (searchItem != null && deleteCategoriesItem != null) {
             searchItem.setVisible(!isVisible);
-            deleteItem.setVisible(isVisible);
+            deleteCategoriesItem.setVisible(isVisible);
         }
     }
 
@@ -134,6 +136,9 @@ public class ListCategoryActivity extends AppCompatActivity {
                     }
                     loadData();
                     updateSearchDeleteButtonVisibility(false);
+                    if (searchItem != null && searchItem.isActionViewExpanded()) {
+                        searchItem.collapseActionView();
+                    }
                     Toast.makeText(ListCategoryActivity.this, "Xóa thành công!", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -190,6 +195,14 @@ public class ListCategoryActivity extends AppCompatActivity {
         super.onResume();
         // Cập nhật lại danh sách từ db mỗi khi quay lại màn hình này
         loadData();
+
+        boolean hasSelectedItems = !adapter.getSelectedCategoryIds().isEmpty();
+        updateSearchDeleteButtonVisibility(hasSelectedItems);
+
+        // Đóng SearchView nếu nó đang mở
+        if (searchItem != null && searchItem.isActionViewExpanded()) {
+            searchItem.collapseActionView();
+        }
     }
 
     public void getWidgets() {
@@ -246,6 +259,9 @@ public class ListCategoryActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 categoryDAO.deleteCategory(categoryId);
                 loadData();
+                if (searchItem != null && searchItem.isActionViewExpanded()) {
+                    searchItem.collapseActionView();
+                }
                 Toast.makeText(ListCategoryActivity.this, "Xóa thành công!", Toast.LENGTH_SHORT).show();
             }
         });
