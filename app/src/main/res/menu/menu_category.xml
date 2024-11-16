@@ -39,7 +39,7 @@
         app:showAsAction="collapseActionView|always"
         android:title="Search" />
     <item
-        android:id="@+id/itemDeleteCategory"
+        android:id="@+id/itemDeleteCategories"
         android:icon="@drawable/ic_baseline_delete_24"
         android:title="Xóa"
         android:visible="false"

@@ -74,7 +74,7 @@ public class ListCategoryActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_category, menu);
         searchItem = menu.findItem(R.id.itemSearchCategory);
-        deleteItem = menu.findItem(R.id.itemDeleteCategory);
+        deleteItem = menu.findItem(R.id.itemDeleteCategories);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -106,7 +106,7 @@ public class ListCategoryActivity extends AppCompatActivity {
         } else if (itemId == R.id.itemTotalRemindersAsc) {
             adapter.sortTotalRemindersAsc();
             return true;
-        } else if (itemId == R.id.itemDeleteCategory) {
+        } else if (itemId == R.id.itemDeleteCategories) {
             deleteSelectedCategories();
             return true;
         }
