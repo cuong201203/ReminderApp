@@ -61,6 +61,7 @@ public class CategoryAdapter extends ArrayAdapter {
                         selectedCategoryIds.remove(category.getId());
                     }
                     ((ListCategoryActivity) context).updateSearchDeleteButtonVisibility(!selectedCategoryIds.isEmpty());
+                    notifyDataSetChanged();
                 });
             }
 
