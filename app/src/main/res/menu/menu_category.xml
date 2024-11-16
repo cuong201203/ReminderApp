@@ -33,13 +33,13 @@
         </menu>
     </item>
     <item
-        android:id="@+id/actionSearchCategory"
+        android:id="@+id/itemSearchCategory"
         android:icon="@drawable/ic_search_black_24dp"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="collapseActionView|always"
         android:title="Search" />
     <item
-        android:id="@+id/actionDeleteCategory"
+        android:id="@+id/itemDeleteCategory"
         android:icon="@drawable/ic_baseline_delete_24"
         android:title="Xóa"
         android:visible="false"
