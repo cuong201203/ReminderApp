@@ -45,7 +45,7 @@ public class CategoryAdapter extends ArrayAdapter {
         if (list.size() > 0 && position >= 0) {
             final TextView txtCategoryTitle = convertView.findViewById(R.id.txtCategoryTitle);
             final TextView txtTotalReminders = convertView.findViewById(R.id.txtTotalReminders);
-            final CheckBox checkBox = convertView.findViewById(R.id.checkBox);
+            final CheckBox checkBox = convertView.findViewById(R.id.chkCategoryItem);
 
             Category category = list.get(position);
             txtCategoryTitle.setText(category.getTitle());
@@ -74,13 +74,18 @@ public class CategoryAdapter extends ArrayAdapter {
         return selectedCategoryIds;
     }
 
+    private int compareCategoryWithDefault(Category c1, Category c2) {
+        if (c1.getTitle().equals("Mặc định")) return -1;
+        if (c2.getTitle().equals("Mặc định")) return 1;
+        return 0; // Cả hai đều không phải "Mặc định"
+    }
+
     public void sortCategoryTitleAZ() {
         Collections.sort(list, new Comparator<Category>() {
             @Override
             public int compare(Category c1, Category c2) {
                 // Đặt danh mục "Mặc định" luôn ở đầu
-                if (c1.getTitle().equals("Mặc định")) return -1;
-                if (c2.getTitle().equals("Mặc định")) return 1;
+                if (compareCategoryWithDefault(c1, c2) != 0) return compareCategoryWithDefault(c1, c2);
 
                 return c1.getTitle().compareToIgnoreCase(c2.getTitle());
             }
@@ -92,8 +97,7 @@ public class CategoryAdapter extends ArrayAdapter {
         Collections.sort(list, new Comparator<Category>() {
             @Override
             public int compare(Category c1, Category c2) {
-                if (c1.getTitle().equals("Mặc định")) return -1;
-                if (c2.getTitle().equals("Mặc định")) return 1;
+                if (compareCategoryWithDefault(c1, c2) != 0) return compareCategoryWithDefault(c1, c2);
 
                 return c2.getTitle().compareToIgnoreCase(c1.getTitle());
             }
@@ -107,8 +111,8 @@ public class CategoryAdapter extends ArrayAdapter {
             public int compare(Category c1, Category c2) {
                 int reminderCount1 = categoryDAO.getTotalReminders(c1.getId());
                 int reminderCount2 = categoryDAO.getTotalReminders(c2.getId());
-                if (c1.getTitle().equals("Mặc định")) return -1;
-                if (c2.getTitle().equals("Mặc định")) return 1;
+
+                if (compareCategoryWithDefault(c1, c2) != 0) return compareCategoryWithDefault(c1, c2);
 
                 return Integer.compare(reminderCount2, reminderCount1);
             }
@@ -122,8 +126,8 @@ public class CategoryAdapter extends ArrayAdapter {
             public int compare(Category c1, Category c2) {
                 int reminderCount1 = categoryDAO.getTotalReminders(c1.getId());
                 int reminderCount2 = categoryDAO.getTotalReminders(c2.getId());
-                if (c1.getTitle().equals("Mặc định")) return -1;
-                if (c2.getTitle().equals("Mặc định")) return 1;
+
+                if (compareCategoryWithDefault(c1, c2) != 0) return compareCategoryWithDefault(c1, c2);
 
                 return Integer.compare(reminderCount1, reminderCount2);
             }
