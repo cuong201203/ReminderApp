@@ -1,9 +1,11 @@
 package com.example.reminderapp.entity;
 
+import java.util.ArrayList;
+
 public class Category {
     private int id;
     private String title;
-
+//    private ArrayList<Reminder> listReminder = null;
     // Dùng khi thêm dữ liệu mới vì id tự tăng
     public Category(String title) {
         this.title = title;
@@ -13,8 +15,12 @@ public class Category {
     public Category(int id, String title) {
         this.id = id;
         this.title = title;
+//        listReminder = new ArrayList<Reminder>();
     }
 
+//    public boolean add(Reminder r){
+//
+//    }
     public int getId() {
         return id;
     }
@@ -30,9 +36,11 @@ public class Category {
     public void setTitle(String title) {
         this.title = title;
     }
-
-//    @Override
-//    public String toString() {
-//        return this.title;
+//    public ArrayList<Reminder> getListReminder(){
+//        return listReminder;
 //    }
+    @Override
+    public String toString() {
+        return this.title;
+    }
 }

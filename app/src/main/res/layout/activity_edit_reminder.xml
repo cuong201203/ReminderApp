@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".UI.EditReminderActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/main_color"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="Sửa nhắc nhở"
+        app:titleTextColor="#fff" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nhắc nhở"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/border_box"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:text="Tiêu đề:"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/editEditReminderTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Nhập tiêu đề"
+                    android:inputType="text" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:text="Mô tả:"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/editEditReminderDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:gravity="start|top"
+                    android:inputType="textMultiLine" />
+
+            </TableRow>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Thời gian nhắc nhở"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/border_box"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:text="Ngày:"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/txtEditReminderDate"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:text="10/12/2024" />
+
+                <Button
+                    android:id="@+id/btnEditReminderDate"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:backgroundTint="@color/main_color"
+                    android:text="Chọn ngày" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:text="Giờ:"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/txtEditReminderTime"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:text="10:00" />
+
+                <Button
+                    android:id="@+id/btnEditReminderTime"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:backgroundTint="@color/main_color"
+                    android:text="Chọn giờ" />
+
+
+            </TableRow>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Danh mục"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/border_box"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:text="Thêm vào:"
+                    android:textSize="16sp" />
+
+                <Spinner
+                    android:id="@+id/spinCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+            </TableRow>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnEditReminder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/main_color"
+            android:text="Sửa" />
+
+    </LinearLayout>
+
+</LinearLayout>

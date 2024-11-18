@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Màu nền của phần tử -->
+    <solid android:color="#FFFFFF" />
+
+    <!-- Định nghĩa viền -->
+    <stroke
+        android:width="2dp"
+        android:color="#000000" /> <!-- Viền màu đỏ -->
+
+    <!-- Bo góc của phần tử -->
+    <corners android:radius="8dp" />
+
+    <!-- Padding bên trong viền -->
+    <padding
+        android:left="8dp"
+        android:top="8dp"
+        android:right="8dp"
+        android:bottom="8dp" />
+</shape>

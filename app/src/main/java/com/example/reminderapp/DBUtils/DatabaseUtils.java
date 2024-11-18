@@ -15,7 +15,7 @@ public class DatabaseUtils extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createCategoryTable = "CREATE TABLE Category (ID INTEGER PRIMARY KEY AUTOINCREMENT, Title TEXT NOT NULL);";
-        String createReminderTable = "CREATE TABLE Reminder (ID INTEGER PRIMARY KEY AUTOINCREMENT, Title TEXT NOT NULL, Description TEXT, Date TEXT, Time TEXT, CreatedDate TEXT, CreatedTime TEXT, CategoryID INTEGER, FOREIGN KEY (CategoryID) REFERENCES Category(ID));";
+        String createReminderTable = "CREATE TABLE Reminder (ID INTEGER PRIMARY KEY AUTOINCREMENT, Title TEXT NOT NULL, Description TEXT, Date TEXT, Time TEXT, CategoryID INTEGER, FOREIGN KEY (CategoryID) REFERENCES Category(ID));";
         String createNotificationTable = "CREATE TABLE Notification (ID INTEGER PRIMARY KEY AUTOINCREMENT, Title TEXT NOT NULL, Content TEXT, Date TEXT, Time TEXT, Status INTEGER, ReminderID INTEGER, FOREIGN KEY (ReminderID) REFERENCES Reminder(ID));";
 
         db.execSQL(createCategoryTable);

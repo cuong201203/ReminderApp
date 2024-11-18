@@ -209,11 +209,11 @@ public class ListCategoryActivity extends AppCompatActivity {
         lvCategory = findViewById(R.id.lvCategory);
         btnAddCategoryNavigate = findViewById(R.id.btnAddCategoryNavigate);
         txtNoResultsForCategory = findViewById(R.id.txtNoResultsForCategory);
+
     }
 
     public void loadData() {
         listCategory = categoryDAO.getAllCategories();
-
         moveDefaultCategoryToTop();
 
         adapter = new CategoryAdapter(ListCategoryActivity.this, R.layout.item_category, listCategory);
