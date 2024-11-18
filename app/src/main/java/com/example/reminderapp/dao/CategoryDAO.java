@@ -56,7 +56,7 @@ public class CategoryDAO {
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         while (cursor.isAfterLast() == false) {
-            Category category = new Category(cursor.getString(1));
+            Category category = new Category(cursor.getInt(0), cursor.getString(1));
             categoryList.add(category);
             cursor.moveToNext();
         }
