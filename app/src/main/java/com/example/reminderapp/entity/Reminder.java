@@ -1,25 +1,32 @@
 package com.example.reminderapp.entity;
 
+import java.io.Serializable;
+
 public class Reminder {
     private int id;
     private String title;
     private String description;
     private String date;
     private String time;
-    private String createdDate;
-    private String createdTime;
     private int categoryId;
+    public Reminder(){
 
-    public Reminder(int id, String title, String description, String date, String time, String createdDate, String createdTime, int categoryId) {
+    }
+    public Reminder(int id, String title, String description, String date, String time, int categoryId) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.date = date;
         this.time = time;
-        this.createdDate = createdDate;
-        this.createdTime = createdTime;
         this.categoryId = categoryId;
     }
+//    public Reminder( String title, String description, String date, String time, int categoryId) {
+//        this.title = title;
+//        this.description = description;
+//        this.date = date;
+//        this.time = time;
+//        this.categoryId = categoryId;
+//    }
 
     public String getTime() {
         return time;
@@ -35,22 +42,6 @@ public class Reminder {
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
-    }
-
-    public String getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(String createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(String createdTime) {
-        this.createdTime = createdTime;
     }
 
     public String getDate() {

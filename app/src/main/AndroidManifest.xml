@@ -13,6 +13,21 @@
         android:theme="@style/Theme.ReminderApp"
         tools:targetApi="31">
         <activity
+            android:name=".UI.EditReminderActivity"
+            android:parentActivityName=".MainActivity">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".UI.AddReminderActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
             android:name=".UI.EditCategoryActivity"
             android:exported="false"
             android:parentActivityName=".UI.ListCategoryActivity">
@@ -32,6 +47,7 @@
             android:name=".UI.ListCategoryActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity">
+
             <!-- Sử dụng meta-data hỗ trợ những phiên bản Android dưới 5.0 -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
