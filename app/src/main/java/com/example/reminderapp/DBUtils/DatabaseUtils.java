@@ -30,4 +30,5 @@ public class DatabaseUtils extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS Category");
         onCreate(db);
     }
+
 }
