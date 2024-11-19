@@ -20,7 +20,7 @@ public class ReminderDAO {
     }
     //Lấy toàn bộ danh sách nhắc nhở
     public ArrayList<Reminder> getAllReminders() {
-        ArrayList<Reminder> reminderList = new ArrayList<>();
+        ArrayList<Reminder> reminders = new ArrayList<>();
         SQLiteDatabase db = dbUtils.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM Reminder", null);
 
@@ -34,12 +34,12 @@ public class ReminderDAO {
                         cursor.getInt(5)
                 );
                  reminder.setId(cursor.getInt(0));
-                reminderList.add(reminder);
+                reminders.add(reminder);
             } while (cursor.moveToNext());
         }
         cursor.close();
         db.close();
-        return reminderList;
+        return reminders;
     }
 
     //Tìm kiếm nhắc nhở theo title
@@ -61,7 +61,7 @@ public class ReminderDAO {
                             cursor.getString(2), // Description
                             cursor.getString(3), // Time
                             cursor.getString(4), // Date
-                            cursor.getInt(5)     // Priority
+                            cursor.getInt(5)     // categoryId
                     );
                     reminder.setId(cursor.getInt(0)); // ID
                     reminderList.add(reminder);

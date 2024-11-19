@@ -96,16 +96,15 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onQueryTextSubmit(String query) {
                     // Gọi hàm xử lý khi người dùng nhấn nút "Search"
                     doSearch(query);
-                    return false; // Đã xử lý sự kiện
+                    return false;
                 }
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     // Gọi hàm xử lý khi văn bản thay đổi
-                    if (newText != null && !newText.trim().isEmpty()) {
+
                         doSearch(newText);
-                    }
-                    return false; // Đã xử lý sự kiện
+                    return false;
                 }
             });
 
@@ -120,8 +119,8 @@ public class MainActivity extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         getMenuInflater().inflate(R.menu.menu_reminder_item,menu);
-        MenuItem editItem = menu.findItem(R.id.itemEditCategory);
-        MenuItem deleteItem = menu.findItem(R.id.itemDeleteCategory);
+        MenuItem editItem = menu.findItem(R.id.itemEditReminder);
+        MenuItem deleteItem = menu.findItem(R.id.itemDeleteReminder);
         editItem.setVisible(true);
         deleteItem.setVisible(true);
     }
@@ -155,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 reminderDAO.deleteReminder(id);
+                loadData();
                 Toast.makeText(MainActivity.this,"Xóa nhắc nhở thành công!",Toast.LENGTH_SHORT).show();
             }
         });
