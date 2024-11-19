@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseUtils extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "ReminderApp1.db";
+    private static final String DATABASE_NAME = "ReminderApp.db";
     private static final int DATABASE_VERSION = 1;
 
     public DatabaseUtils(Context context) {
