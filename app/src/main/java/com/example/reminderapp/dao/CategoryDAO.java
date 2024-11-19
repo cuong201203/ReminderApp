@@ -119,4 +119,6 @@ public class CategoryDAO {
         db.delete("Category", "ID = ?", new String[]{String.valueOf(id)});
         db.close();
     }
+
+
 }

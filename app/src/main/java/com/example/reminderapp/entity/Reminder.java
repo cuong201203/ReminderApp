@@ -20,13 +20,13 @@ public class Reminder {
         this.time = time;
         this.categoryId = categoryId;
     }
-//    public Reminder( String title, String description, String date, String time, int categoryId) {
-//        this.title = title;
-//        this.description = description;
-//        this.date = date;
-//        this.time = time;
-//        this.categoryId = categoryId;
-//    }
+    public Reminder(String title, String description, String date, String time, int categoryId) {
+        this.title = title;
+        this.description = description;
+        this.date = date;
+        this.time = time;
+        this.categoryId = categoryId;
+    }
 
     public String getTime() {
         return time;

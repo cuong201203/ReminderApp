@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -32,15 +33,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class EditReminderActivity extends AppCompatActivity {
-    ReminderDAO reminderDAO;
+    ReminderDAO reminderDAO = new ReminderDAO(this);
     EditText editEditReminderTitle, editEditReminderDescription;
     TextView txtEditReminderDate,txtEditReminderTime;
     Button btnEditReminderDate,btnEditReminderTime,btnEditReminder;
     Spinner spinCategory;
     Calendar cal;
 
-    CategoryDAO categoryDAO;
-    //    CategoryAdapter categoryAdapter;
+    CategoryDAO categoryDAO = new CategoryDAO(this);
     ArrayList<Category> categories = new ArrayList<Category>();
     ArrayAdapter<Category> adapter;
 
@@ -86,9 +86,7 @@ public class EditReminderActivity extends AppCompatActivity {
         return true;
     }
     public void setUpCategorySpinner() {
-        //categories = categoryDAO.getAllCategories(); // Lấy danh mục từ DAO
-        categories.add(new Category(1,"Cá nhân"));
-        categories.add(new Category(2,"Công việc"));
+        categories = categoryDAO.getAllCategories(); // Lấy danh mục từ DAO
         adapter = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1,categories);
         spinCategory.setAdapter(adapter);
     }
@@ -145,10 +143,37 @@ public class EditReminderActivity extends AppCompatActivity {
 
             String reminderTime = bundle.getString("reminderTime");
             txtEditReminderTime.setText(reminderTime);
-            int categoryId = bundle.getInt("categoryId");
-            spinCategory.setSelection(categoryId-1);
+            final int[] categoryId = {bundle.getInt("categoryId")};
+            spinCategory.setSelection(categoryId[0] -1);
+
+            btnEditReminder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (validateInputs()) {
+                        try {
+
+                            String title = editEditReminderTitle.getText().toString();
+                            String description = editEditReminderDescription.getText().toString();
+                            String date = txtEditReminderDate.getText().toString();
+                            String time = txtEditReminderTime.getText().toString();
+                            Category category = (Category) spinCategory.getSelectedItem();
+                            int categoryId = category.getId();
+
+                            Reminder reminder = new Reminder(reminderId,title, description, date, time, categoryId);
+                            category.add(reminder);
+                            reminderDAO.updateReminder(reminder);
+                            Toast.makeText(EditReminderActivity.this, "Sửa nhắc nhở thành công", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } catch (Exception e) {
+                            Toast.makeText(EditReminderActivity.this, "Sửa nhắc nhở thất bại", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                }
+            });
 
         }
+
 
 
 

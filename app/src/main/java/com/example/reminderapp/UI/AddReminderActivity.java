@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -26,20 +27,21 @@ import com.example.reminderapp.adapter.CategoryAdapter;
 import com.example.reminderapp.dao.CategoryDAO;
 import com.example.reminderapp.dao.ReminderDAO;
 import com.example.reminderapp.entity.Category;
+import com.example.reminderapp.entity.Reminder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class AddReminderActivity extends AppCompatActivity {
-    ReminderDAO reminderDAO;
+    ReminderDAO reminderDAO = new ReminderDAO(this);
     EditText editAddReminderTitle, editAddReminderDescription;
     TextView txtAddReminderDate,txtAddReminderTime;
     Button btnAddReminderDate,btnAddReminderTime,btnAddReminder;
     Spinner spinCategory;
     Calendar cal;
+
 //
-    CategoryDAO categoryDAO;
-//    CategoryAdapter categoryAdapter;
+    CategoryDAO categoryDAO = new CategoryDAO(this);
     ArrayList<Category> categories = new ArrayList<Category>();
     ArrayAdapter<Category> adapter;
 
@@ -83,9 +85,7 @@ public class AddReminderActivity extends AppCompatActivity {
         spinCategory = findViewById(R.id.spinCategory);
     }
     public void setUpCategorySpinner() {
-        //categories = categoryDAO.getAllCategories(); // Lấy danh mục từ DAO
-        categories.add(new Category(1,"Cá nhân"));
-        categories.add(new Category(2,"Công việc"));
+        categories = categoryDAO.getAllCategories();
         adapter = new ArrayAdapter<Category>(this, android.R.layout.simple_list_item_1,categories);
         spinCategory.setAdapter(adapter);
     }
@@ -141,6 +141,29 @@ public class AddReminderActivity extends AppCompatActivity {
         btnAddReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(validateInputs()){
+
+                        String title = editAddReminderTitle.getText().toString();
+                        String description = editAddReminderDescription.getText().toString();
+                        String date = txtAddReminderDate.getText().toString();
+                        String time = txtAddReminderTime.getText().toString();
+
+                        Category category = (Category) spinCategory.getSelectedItem();
+                        int categoryId = category.getId();
+                        Reminder reminder = new Reminder(title, description, date,time,categoryId);
+                        category.add(reminder);
+
+
+                    try{
+                        reminderDAO.addReminder(reminder);
+                        Toast.makeText(AddReminderActivity.this,"Thêm nhắc nhở thành công",Toast.LENGTH_SHORT).show();
+                        finish();
+                    }catch (Exception e){
+                        Toast.makeText(AddReminderActivity.this,"Thêm nhắc nhở thất bại",Toast.LENGTH_SHORT).show();
+
+                    }
+
+                }
 
             }
         });

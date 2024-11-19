@@ -31,8 +31,6 @@ import com.example.reminderapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 
 public class ListCategoryActivity extends AppCompatActivity {

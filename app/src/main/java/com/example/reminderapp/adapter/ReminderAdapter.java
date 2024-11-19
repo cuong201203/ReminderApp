@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.reminderapp.R;
+import com.example.reminderapp.dao.CategoryDAO;
+import com.example.reminderapp.dao.ReminderDAO;
 import com.example.reminderapp.entity.Reminder;
 
 import java.util.ArrayList;
@@ -21,14 +23,14 @@ public class ReminderAdapter extends ArrayAdapter {
     Activity context=null;
     int layoutID;
     ArrayList<Reminder> list;
-//    ReminderDAO reminderDAO;
+    ReminderDAO reminderDAO;
 
     public ReminderAdapter(@NonNull Activity context, int resource, @NonNull List<Reminder> objects) {
         super(context, resource, objects);
         this.context = context;
         this.layoutID = resource;
         this.list = new ArrayList<Reminder>(objects);
-//        this.reminderDAO = new ReminderDAO(context);
+        this.reminderDAO = new ReminderDAO(context);
     }
 
     @NonNull
@@ -51,10 +53,10 @@ public class ReminderAdapter extends ArrayAdapter {
             txtReminderDescription.setText(reminder.getDescription()+"");
             txtReminderDate.setText(reminder.getDate()+"");
             txtReminderTime.setText(reminder.getTime()+"");
-            txtReminderCategory.setText(reminder.getCategoryId()+"");
-
-            //            String categoryName =reminderDAO.getCategoryNameById(reminder.getCategoryId());
-//            txtReminderCategory.setText(categoryName);
+//            txtReminderCategory.setText(reminder.getCategoryId()+"");
+//
+            String categoryName =reminderDAO.getCategoryNameById(reminder.getCategoryId());
+            txtReminderCategory.setText(categoryName);
 
         }
         return convertView;
