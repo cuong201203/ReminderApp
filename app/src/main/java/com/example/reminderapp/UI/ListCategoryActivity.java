@@ -7,6 +7,7 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -182,7 +183,7 @@ public class ListCategoryActivity extends AppCompatActivity {
             deleteCategory(selectedCategory.getId());
             return true;
         } else if (itemId == R.id.itemShareCategory) {
-            shareCategory(selectedCategory.getTitle());
+            shareCategory(selectedCategory.getId(), selectedCategory.getTitle());
             return true;
         }
         return super.onContextItemSelected(item);
@@ -309,18 +310,23 @@ public class ListCategoryActivity extends AppCompatActivity {
         }
     }
 
-    public void shareCategory(String categoryTitle) {
+    public void shareCategory(Integer categoryId, String categoryTitle) {
+        ArrayList<String> reminders = categoryDAO.getRemindersByCategory(categoryId);
+
+        StringBuilder strData = new StringBuilder("Danh mục: ").append(categoryTitle).append("\n\n");
+        if (reminders.isEmpty()) {
+            strData.append("Không có nhắc nhở nào trong danh mục này.");
+        } else {
+            strData.append("Danh sách nhắc nhở:\n\n");
+            for (int i = 0; i < reminders.size(); i++) {
+                strData.append(i + 1).append(". ").append(reminders.get(i)).append("\n\n");
+            }
+        }
+
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("text/plain"); // Đặt kiểu dữ liệu chia sẻ là văn bản thuần túy
-
-        String strData = "Danh mục: " + categoryTitle + "\nNhắc nhở gì đó @@...";
-        shareIntent.putExtra(Intent.EXTRA_TEXT, strData);
-
-        // Cung cấp chủ đề cho ứng dụng như Gmail
-        String subject = "Ứng dụng nhắc nhở";
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
-
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, strData.toString());
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Ứng dụng nhắc nhở");
         startActivity(Intent.createChooser(shareIntent, "Chọn ứng dụng để chia sẻ:"));
     }
-
 }

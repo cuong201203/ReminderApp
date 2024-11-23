@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.reminderapp.DBUtils.DatabaseUtils;
@@ -120,5 +121,30 @@ public class CategoryDAO {
         db.close();
     }
 
+    public ArrayList<String> getRemindersByCategory(Integer categoryId) {
+        ArrayList<String> reminders = new ArrayList<>();
+        SQLiteDatabase db = dbUtils.getReadableDatabase();
+        String query = "SELECT title, description, date, time FROM Reminder WHERE CategoryID = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(categoryId)});
 
+        if (cursor.moveToFirst()) {
+            do {
+                String title = cursor.getString(0);
+                String description = cursor.getString(1);
+                String date = cursor.getString(2);
+                String time = cursor.getString(3);
+
+                String reminderInfo = "Tên nhắc nhở: " + title + "\n" +
+                        ((!TextUtils.isEmpty(description)) ? ("Mô tả: " + description + "\n") : "") +
+                        "Ngày: " + date + "\n" +
+                        "Giờ: " + time;
+
+                reminders.add(reminderInfo);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return reminders;
+    }
 }

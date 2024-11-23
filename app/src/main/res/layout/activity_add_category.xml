@@ -29,6 +29,7 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="Tên danh mục:"
             android:textSize="18sp" />
 
@@ -36,6 +37,7 @@
             android:id="@+id/editAddCategoryTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:ems="10"
             android:hint="Nhập tên danh mục..."
             android:inputType="text" />
@@ -44,8 +46,10 @@
             android:id="@+id/btnAddCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:backgroundTint="@color/main_color"
-            android:text="THÊM" />
+            android:text="THÊM"
+            android:textSize="16sp" />
     </LinearLayout>
 
 </LinearLayout>

@@ -23,7 +23,10 @@
         android:id="@+id/lvCategory"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar" />
+        android:layout_below="@id/toolbar"
+        android:paddingBottom="80dp"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnAddCategoryNavigate"
@@ -33,7 +36,9 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
         android:contentDescription="Add Category"
-        android:src="@drawable/ic_baseline_add_24" />
+        android:src="@drawable/ic_baseline_add_24"
+        app:tint="@color/white"
+        app:backgroundTint="@color/main_color" />
 
     <TextView
         android:id="@+id/txtNoResultsForCategory"
