@@ -117,6 +117,7 @@ public class CategoryDAO {
 
     public void deleteCategory(int id) {
         SQLiteDatabase db = dbUtils.getWritableDatabase();
+        db.delete("Reminder", "CategoryID = ?", new String[]{String.valueOf(id)});
         db.delete("Category", "ID = ?", new String[]{String.valueOf(id)});
         db.close();
     }
