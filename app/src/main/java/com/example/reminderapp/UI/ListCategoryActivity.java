@@ -7,6 +7,7 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -75,6 +76,15 @@ public class ListCategoryActivity extends AppCompatActivity {
         searchItem = menu.findItem(R.id.itemSearchCategory);
         deleteCategoriesItem = menu.findItem(R.id.itemDeleteCategories);
         SearchView searchView = (SearchView) searchItem.getActionView();
+
+        // Đảm bảo SearchView chiếm toàn bộ chiều ngang khi được focus
+        searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                v.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+                v.requestLayout();
+            }
+        });
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

@@ -47,7 +47,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:backgroundTint="@color/main_color"
-            android:text="LƯU" />
+            android:text="LƯU"
+            android:textSize="16sp" />
     </LinearLayout>
 
 </LinearLayout>
