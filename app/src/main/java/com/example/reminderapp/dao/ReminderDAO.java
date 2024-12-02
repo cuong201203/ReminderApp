@@ -138,5 +138,51 @@ public class ReminderDAO {
         return categoryName;
     }
 
+    // Xem nhắc nhở theo danh mục
+    public ArrayList<Reminder> filterRemindersByCategory(int id) {
+        ArrayList<Reminder> filteredReminders = new ArrayList<>();
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+
+        if(id == 1){
+            return getAllReminders();// Mặc định thì trả về tất cả nhắc nhở
+        }else{
+            try {
+                db = dbUtils.getReadableDatabase();
+                String query = "SELECT * FROM Reminder WHERE CategoryID = ?";
+                cursor = db.rawQuery(query, new String[]{String.valueOf(id)});
+
+                if (cursor.moveToFirst()) {
+                    do {
+                        Reminder reminder = new Reminder(
+                                cursor.getString(1), // Title
+                                cursor.getString(2), // Description
+                                cursor.getString(3), // Time
+                                cursor.getString(4), // Date
+                                cursor.getInt(5)      // CategoryId
+                        );
+                        reminder.setId(cursor.getInt(0));
+                        filteredReminders.add(reminder);
+                    } while (cursor.moveToNext());
+                }
+            } catch (Exception e) {
+                // Xử lý ngoại lệ ở đây
+                Log.e("DatabaseError", "Error filtering reminders: " + e.getMessage());
+            } finally {
+                // Đóng cursor và database
+                if (cursor != null) {
+                    cursor.close();
+                }
+                if (db != null) {
+                    db.close();
+                }
+            }
+
+            return filteredReminders;
+        }
+
+
+    }
+
 
 }
