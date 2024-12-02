@@ -148,4 +148,22 @@ public class CategoryDAO {
         db.close();
         return reminders;
     }
+
+    public int getCategoryIdByTitle(String title) {
+        int categoryId = -1; // Giá trị mặc định nếu không tìm thấy
+
+        SQLiteDatabase db = dbUtils.getReadableDatabase(); // Lấy kết nối đến cơ sở dữ liệu để đọc
+        String query = "SELECT id FROM Category WHERE title = ?"; // Truy vấn để tìm ID của danh mục dựa trên tiêu đề
+        Cursor cursor = db.rawQuery(query, new String[]{title}); // Thực hiện truy vấn và lấy kết quả
+
+        if (cursor.moveToFirst()) { // Nếu tìm thấy kết quả
+            categoryId = cursor.getInt(0); // Lấy giá trị ID từ kết quả
+        }
+
+        cursor.close(); // Đóng kết quả truy vấn
+        db.close(); // Đóng kết nối đến cơ sở dữ liệu
+
+        return categoryId; // Trả về ID của danh mục, hoặc -1 nếu không tìm thấy
+    }
+
 }

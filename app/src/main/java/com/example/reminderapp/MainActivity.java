@@ -3,6 +3,7 @@ package com.example.reminderapp;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -201,9 +202,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Thời gian nhắc nhở cũ nhất", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.itemNewestCreatedTime) {
+            //sortByLatestCreated();
             Toast.makeText(this, "Thời gian tạo mới nhất", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.itemOldestCreatedTime) {
+            //sortByOldestCreated();
             Toast.makeText(this, "Thời gian tạo cũ nhất", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.itemManageNotification) {
@@ -263,6 +266,34 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Reminder reminderSelected = listReminder.get(position);
                 doEditReminder(reminderSelected);
+            }
+        });
+
+        spinCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedCategory = adapterView.getItemAtPosition(i).toString();
+                int id = categoryDAO.getCategoryIdByTitle(selectedCategory);
+                Log.d("AAA",id+"");
+                // Lọc danh sách nhắc nhở theo danh mục
+                ArrayList<Reminder> filteredReminders = reminderDAO.filterRemindersByCategory(id);
+
+                // Cập nhật danh sách nhắc nhở và thông báo cho Adapter
+                listReminder.clear();
+                listReminder.addAll(filteredReminders);
+
+//                String string ="";
+//                for(Reminder reminder: listReminder){
+//                    string += reminder.getTitle()+ " ";
+//                }
+//                Log.d("AAA",string);
+
+                adapter = new ReminderAdapter(MainActivity.this, R.layout.item_reminder, listReminder);
+                lvReminders.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
     }
