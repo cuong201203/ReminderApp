@@ -93,4 +93,30 @@ public class ReminderAdapter extends ArrayAdapter {
         });
         notifyDataSetChanged();
     }
+
+    // Sắp xếp theo tên A-Z
+    public void sortByNameAscending() {
+        Collections.sort(list, new Comparator<Reminder>() {
+            @Override
+            public int compare(Reminder reminder1, Reminder reminder2) {
+                char firstChar1 = Character.toLowerCase(reminder1.getTitle().charAt(0));
+                char firstChar2 = Character.toLowerCase(reminder2.getTitle().charAt(0));
+                return Character.compare(firstChar1, firstChar2);
+            }
+        });
+        notifyDataSetChanged();
+    }
+
+    // Sắp xếp theo tên Z-A
+    public void sortByNameDescending() {
+        Collections.sort(list, new Comparator<Reminder>() {
+            @Override
+            public int compare(Reminder reminder1, Reminder reminder2) {
+                char firstChar1 = Character.toLowerCase(reminder1.getTitle().charAt(0));
+                char firstChar2 = Character.toLowerCase(reminder2.getTitle().charAt(0));
+                return Character.compare(firstChar2, firstChar1); // Đảo ngược thứ tự so sánh để sắp xếp giảm dần
+            }
+        });
+        notifyDataSetChanged();
+    }
 }

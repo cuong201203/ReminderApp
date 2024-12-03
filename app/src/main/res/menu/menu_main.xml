@@ -27,7 +27,7 @@
         <menu>
             <item
                 android:id="@+id/itemByReminderTime"
-                android:title="Thời gian nhắc nhở">
+                android:title="Thời gian">
                 <menu>
                     <item
                         android:id="@+id/itemNewestReminderTIme"
@@ -38,15 +38,15 @@
                 </menu>
             </item>
             <item
-                android:id="@+id/itemByCreatedTime"
-                android:title="Thời gian tạo">
+                android:id="@+id/itemByName"
+                android:title="Tên">
                 <menu>
                     <item
-                        android:id="@+id/itemNewestCreatedTime"
-                        android:title="Mới nhất" />
+                        android:id="@+id/itemNameAZ"
+                        android:title="A-Z" />
                     <item
-                        android:id="@+id/itemOldestCreatedTime"
-                        android:title="Cũ nhất" />
+                        android:id="@+id/itemNameZA"
+                        android:title="Z-A" />
                 </menu>
             </item>
         </menu>
