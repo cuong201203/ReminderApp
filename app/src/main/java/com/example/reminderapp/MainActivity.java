@@ -202,11 +202,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Thời gian nhắc nhở cũ nhất", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.itemNewestCreatedTime) {
-            //sortByLatestCreated();
+            adapter.sortByDateTimeAscending();
             Toast.makeText(this, "Thời gian tạo mới nhất", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.itemOldestCreatedTime) {
-            //sortByOldestCreated();
+            adapter.sortByDateTimeDescending();
             Toast.makeText(this, "Thời gian tạo cũ nhất", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.itemManageNotification) {
