@@ -196,18 +196,20 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (itemId == R.id.itemNewestReminderTIme) {
-            Toast.makeText(this, "Thời gian nhắc nhở mới nhất", Toast.LENGTH_SHORT).show();
+            adapter.sortByDateTimeAscending();
+            Toast.makeText(this, "Thời gian mới nhất", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.itemOldestReminderTime) {
-            Toast.makeText(this, "Thời gian nhắc nhở cũ nhất", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (itemId == R.id.itemNewestCreatedTime) {
-            adapter.sortByDateTimeAscending();
-            Toast.makeText(this, "Thời gian tạo mới nhất", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (itemId == R.id.itemOldestCreatedTime) {
             adapter.sortByDateTimeDescending();
-            Toast.makeText(this, "Thời gian tạo cũ nhất", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Thời gian cũ nhất", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (itemId == R.id.itemNameAZ) {
+            adapter.sortByNameAscending();
+            Toast.makeText(this, "Tên A-Z", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (itemId == R.id.itemNameZA) {
+            adapter.sortByNameDescending();
+            Toast.makeText(this, "Tên Z-A", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.itemManageNotification) {
             Toast.makeText(this, "Quản lý thông báo", Toast.LENGTH_SHORT).show();
