@@ -219,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadData();
+        loadIntent();
     }
 
 //    public void loadDataByCategory(Category c){
@@ -269,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Hiển thị nhắc nhở lên spin ở màn hình chính
         spinCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -296,5 +298,27 @@ public class MainActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+    }
+
+    public void viewReminder(String id){
+        int idReminder = categoryDAO.getCategoryIdByTitle(id+"");
+        Log.d("AAA",idReminder+"");
+        spinCategory.setSelection(idReminder-1);// set lai gia tri cua spinner
+        // Lọc danh sách nhắc nhở theo danh mục
+        ArrayList<Reminder> filteredReminders = reminderDAO.filterRemindersByCategory(idReminder);
+        // Cập nhật danh sách nhắc nhở và thông báo cho Adapter
+        listReminder.clear();
+        listReminder.addAll(filteredReminders);
+
+        adapter = new ReminderAdapter(MainActivity.this, R.layout.item_reminder, listReminder);
+        lvReminders.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    public void loadIntent(){
+        Intent intent = getIntent();
+        String idString = intent.getStringExtra("category");
+        Log.d("AAA", idString +"");
+        viewReminder(idString);
     }
 }
