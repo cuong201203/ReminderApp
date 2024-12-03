@@ -16,6 +16,8 @@ import com.example.reminderapp.dao.ReminderDAO;
 import com.example.reminderapp.entity.Reminder;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ReminderAdapter extends ArrayAdapter {
@@ -60,5 +62,35 @@ public class ReminderAdapter extends ArrayAdapter {
 
         }
         return convertView;
+    }
+
+    // Sắp xếp theo thời gian tạo mới nhất
+    public void sortByDateTimeAscending() {
+        Collections.sort(list, new Comparator<Reminder>() {
+            @Override
+            public int compare(Reminder reminder1, Reminder reminder2) {
+                int dateCompare = reminder1.getDate().compareTo(reminder2.getDate());
+                if (dateCompare == 0) {
+                    return reminder1.getTime().compareTo(reminder2.getTime());
+                }
+                return dateCompare;
+            }
+        });
+        notifyDataSetChanged();
+    }
+
+    // Sắp xếp theo thời gian tạo cũ nhất
+    public void sortByDateTimeDescending() {
+        Collections.sort(list, new Comparator<Reminder>() {
+            @Override
+            public int compare(Reminder reminder1, Reminder reminder2) {
+                int dateCompare = reminder2.getDate().compareTo(reminder1.getDate()); // Reverse order for descending
+                if (dateCompare == 0) {
+                    return reminder2.getTime().compareTo(reminder1.getTime()); // Reverse order for descending
+                }
+                return dateCompare;
+            }
+        });
+        notifyDataSetChanged();
     }
 }
