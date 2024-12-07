@@ -1,5 +1,7 @@
 package com.example.reminderapp;
 
+import android.app.AlarmManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,10 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.os.Build;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -27,7 +31,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.reminderapp.UI.AddReminderActivity;
 import com.example.reminderapp.UI.EditReminderActivity;
 import com.example.reminderapp.UI.ListCategoryActivity;
-import com.example.reminderapp.adapter.CategoryAdapter;
 import com.example.reminderapp.adapter.ReminderAdapter;
 import com.example.reminderapp.dao.CategoryDAO;
 import com.example.reminderapp.dao.ReminderDAO;
@@ -39,7 +42,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    ReminderDAO reminderDAO = new ReminderDAO(this);
+    private ReminderDAO reminderDAO;
 
     ListView lvReminders = null;
     ArrayList<Reminder> listReminder = new ArrayList<>();
@@ -64,7 +67,17 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        reminderDAO = new ReminderDAO(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!canScheduleExactAlarms()) {
+                Intent intent = new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                startActivity(intent);
+            }
+        }
+        ArrayList<Reminder> reminders = reminderDAO.getAllReminders();
+        for (Reminder reminder : reminders) {
+            reminderDAO.scheduleNotification(reminder);
+        }
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getWidgets();
@@ -265,5 +278,13 @@ public class MainActivity extends AppCompatActivity {
                 doEditReminder(reminderSelected);
             }
         });
+    }
+    private boolean canScheduleExactAlarms() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            return alarmManager.canScheduleExactAlarms();
+        } else {
+            return true;
+        }
     }
 }
