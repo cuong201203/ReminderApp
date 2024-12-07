@@ -52,8 +52,6 @@ public class ListNotificationActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_list_notification);
 
-        notificationDAO.deleteAllNotifications();
-        notificationDAO.insertNotifications();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
