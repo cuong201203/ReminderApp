@@ -105,6 +105,20 @@ public class ReminderDAO {
 
         Log.d("ReminderDAO", "Inserting reminder: " + reminder.getTitle());
         long result = db.insert("Reminder", null, values);
+
+        long reminderId = db.insert("Reminder", null, values);
+        // Cập nhật lại ID cho reminder
+        reminder.setId((int) reminderId);
+
+        //thêm vào bảng Notification
+        values.clear();
+        values.put("Title", reminder.getTitle());
+        values.put("Content", reminder.getDescription());
+        values.put("Date", reminder.getDate());
+        values.put("Time", reminder.getTime());
+        values.put("Status", 0);
+        values.put("ReminderID", reminder.getId());
+        db.insert("Notification", null, values);
         db.close();
 
         if (result == -1) {
@@ -133,7 +147,6 @@ public class ReminderDAO {
         Log.d("ReminderDAO", "Scheduling notification for reminder ID: " + result);
         scheduleNotification(reminder);
     }
-
     public void updateReminder(Reminder reminder) {
         SQLiteDatabase db = dbUtils.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -143,11 +156,21 @@ public class ReminderDAO {
         values.put("Time", reminder.getTime());
         values.put("CategoryId", reminder.getCategoryId());
         db.update("Reminder", values, "ID = ?", new String[]{String.valueOf(reminder.getId())});
+
+        //sửa bảng Notification
+        values.clear();
+        values.put("Title", reminder.getTitle());
+        values.put("Content", reminder.getDescription());
+        values.put("Date", reminder.getDate());
+        values.put("Time", reminder.getTime());
+        db.update("Notification", values, "ReminderID = ?", new String[]{String.valueOf(reminder.getId())});
+
         db.close();
     }
 
     public void deleteReminder(int id) {
         SQLiteDatabase db = dbUtils.getWritableDatabase();
+        db.delete("Notification", "ReminderID = ?", new String[]{String.valueOf(id)});
         db.delete("Reminder", "ID = ?", new String[]{String.valueOf(id)});
         db.close();
     }
@@ -178,6 +201,52 @@ public class ReminderDAO {
         }
 
         return categoryName;
+    }
+
+    // Xem nhắc nhở theo danh mục
+    public ArrayList<Reminder> filterRemindersByCategory(int id) {
+        ArrayList<Reminder> filteredReminders = new ArrayList<>();
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+
+        if(id == 1){
+            return getAllReminders();// Mặc định thì trả về tất cả nhắc nhở
+        }else{
+            try {
+                db = dbUtils.getReadableDatabase();
+                String query = "SELECT * FROM Reminder WHERE CategoryID = ?";
+                cursor = db.rawQuery(query, new String[]{String.valueOf(id)});
+
+                if (cursor.moveToFirst()) {
+                    do {
+                        Reminder reminder = new Reminder(
+                                cursor.getString(1), // Title
+                                cursor.getString(2), // Description
+                                cursor.getString(3), // Time
+                                cursor.getString(4), // Date
+                                cursor.getInt(5)      // CategoryId
+                        );
+                        reminder.setId(cursor.getInt(0));
+                        filteredReminders.add(reminder);
+                    } while (cursor.moveToNext());
+                }
+            } catch (Exception e) {
+                // Xử lý ngoại lệ ở đây
+                Log.e("DatabaseError", "Error filtering reminders: " + e.getMessage());
+            } finally {
+                // Đóng cursor và database
+                if (cursor != null) {
+                    cursor.close();
+                }
+                if (db != null) {
+                    db.close();
+                }
+            }
+
+            return filteredReminders;
+        }
+
+
     }
 
     public void scheduleNotification(Reminder reminder) {

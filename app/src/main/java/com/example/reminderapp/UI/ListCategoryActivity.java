@@ -3,6 +3,7 @@ package com.example.reminderapp.UI;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -239,10 +240,14 @@ public class ListCategoryActivity extends AppCompatActivity {
             }
         });
 
+        //Hiển thị nhắc nhở trong quản lý danh mục
         lvCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(ListCategoryActivity.this, MainActivity.class);
+                String idCategory = parent.getItemAtPosition(position).toString();
+                intent.putExtra("category",idCategory);
+//               Log.d("AAA", idCategory);
                 startActivity(intent);
             }
         });

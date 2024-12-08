@@ -59,6 +59,14 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
+            android:name=".UI.ListNotificationActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".UI.ListCategoryActivity" />
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
