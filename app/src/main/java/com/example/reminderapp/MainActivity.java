@@ -28,6 +28,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.reminderapp.UI.AddReminderActivity;
 import com.example.reminderapp.UI.EditReminderActivity;
 import com.example.reminderapp.UI.ListCategoryActivity;
+import com.example.reminderapp.UI.ListNotificationActivity;
 import com.example.reminderapp.adapter.CategoryAdapter;
 import com.example.reminderapp.adapter.ReminderAdapter;
 import com.example.reminderapp.dao.CategoryDAO;
@@ -212,7 +213,8 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Tên Z-A", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.itemManageNotification) {
-            Toast.makeText(this, "Quản lý thông báo", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, ListNotificationActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

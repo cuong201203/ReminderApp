@@ -90,7 +90,20 @@ public class ReminderDAO {
         values.put("Date", reminder.getDate());
         values.put("Time", reminder.getTime());
         values.put("CategoryID", reminder.getCategoryId());
-        db.insert("Reminder", null, values);
+
+        long reminderId = db.insert("Reminder", null, values);
+        // Cập nhật lại ID cho reminder
+        reminder.setId((int) reminderId);
+
+        //thêm vào bảng Notification
+        values.clear();
+        values.put("Title", reminder.getTitle());
+        values.put("Content", reminder.getDescription());
+        values.put("Date", reminder.getDate());
+        values.put("Time", reminder.getTime());
+        values.put("Status", 0);
+        values.put("ReminderID", reminder.getId());
+        db.insert("Notification", null, values);
         db.close();
     }
     public void updateReminder(Reminder reminder) {
@@ -102,10 +115,20 @@ public class ReminderDAO {
         values.put("Time", reminder.getTime());
         values.put("CategoryId", reminder.getCategoryId());
         db.update("Reminder", values, "ID = ?", new String[]{String.valueOf(reminder.getId())});
+
+        //sửa bảng Notification
+        values.clear();
+        values.put("Title", reminder.getTitle());
+        values.put("Content", reminder.getDescription());
+        values.put("Date", reminder.getDate());
+        values.put("Time", reminder.getTime());
+        db.update("Notification", values, "ReminderID = ?", new String[]{String.valueOf(reminder.getId())});
+
         db.close();
     }
     public void deleteReminder(int id) {
         SQLiteDatabase db = dbUtils.getWritableDatabase();
+        db.delete("Notification", "ReminderID = ?", new String[]{String.valueOf(id)});
         db.delete("Reminder", "ID = ?", new String[]{String.valueOf(id)});
         db.close();
     }
