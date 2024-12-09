@@ -100,11 +100,9 @@ public class MainActivity extends AppCompatActivity {
                     doSearch(query);
                     return false;
                 }
-
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     // Gọi hàm xử lý khi văn bản thay đổi
-
                         doSearch(newText);
                     return false;
                 }
@@ -225,12 +223,6 @@ public class MainActivity extends AppCompatActivity {
         loadData();
         loadIntent();
     }
-
-//    public void loadDataByCategory(Category c){
-//        listReminder.clear();
-//        listReminder.addAll(c.getListReminder());
-//        adapter.notifyDataSetChanged();
-//    }
 
     public void loadData(){
         //set adapter cho spinner danh mục
