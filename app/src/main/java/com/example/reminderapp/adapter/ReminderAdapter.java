@@ -55,8 +55,6 @@ public class ReminderAdapter extends ArrayAdapter {
             txtReminderDescription.setText(reminder.getDescription()+"");
             txtReminderDate.setText(reminder.getDate()+"");
             txtReminderTime.setText(reminder.getTime()+"");
-//            txtReminderCategory.setText(reminder.getCategoryId()+"");
-//
             String categoryName =reminderDAO.getCategoryNameById(reminder.getCategoryId());
             txtReminderCategory.setText(categoryName);
 
