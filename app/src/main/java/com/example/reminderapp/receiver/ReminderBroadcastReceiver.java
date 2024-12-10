@@ -82,13 +82,7 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
     }
 
     private void addReminderToDatabase(Context context, int reminderId, String title, String description) {
-        // Thêm nhắc nhở vào cơ sở dữ liệu
-        ReminderDAO reminderDAO = new ReminderDAO(context);
-        Reminder reminder = new Reminder(title, description, "07/12/2024", "21:30", 1); // Thay đổi ngày và giờ theo dữ liệu cụ thể của bạn
-        reminder.setId(reminderId);
-        reminderDAO.addReminder(reminder);
         Log.d("ReminderBroadcastReceiver", "Reminder added to database: " + title);
-
         // Hiển thị thông báo Toast cho người dùng
         Toast.makeText(context, "Nhắc nhở đã được thêm vào cơ sở dữ liệu", Toast.LENGTH_SHORT).show();
     }

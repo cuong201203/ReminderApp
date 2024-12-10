@@ -119,6 +119,7 @@ public class ReminderDAO {
         values.put("Status", 0);
         values.put("ReminderID", reminder.getId());
         db.insert("Notification", null, values);
+        Log.d("ReminderDAO", "Inserting reminder: " + reminder.getTitle());
         db.close();
 
         if (result == -1) {
@@ -209,9 +210,9 @@ public class ReminderDAO {
         SQLiteDatabase db = null;
         Cursor cursor = null;
 
-        if(id == 1){
+        if (id == 1) {
             return getAllReminders();// Mặc định thì trả về tất cả nhắc nhở
-        }else{
+        } else {
             try {
                 db = dbUtils.getReadableDatabase();
                 String query = "SELECT * FROM Reminder WHERE CategoryID = ?";
@@ -248,6 +249,7 @@ public class ReminderDAO {
 
 
     }
+
 
     public void scheduleNotification(Reminder reminder) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -295,6 +297,5 @@ public class ReminderDAO {
             Log.e("ReminderDAO", "Failed to schedule notification", e);
         }
     }
-
-
 }
+
