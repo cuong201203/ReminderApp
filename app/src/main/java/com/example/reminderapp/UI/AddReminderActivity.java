@@ -109,7 +109,8 @@ public class AddReminderActivity extends AppCompatActivity {
                 DatePickerDialog.OnDateSetListener callback = new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                        txtAddReminderDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                        String formattedDate = String.format("%02d/%02d/%04d", dayOfMonth, month + 1, year);
+                        txtAddReminderDate.setText(formattedDate);
                     }
                 };
                 DatePickerDialog date = new DatePickerDialog(AddReminderActivity.this,callback,year,month,day);
@@ -151,7 +152,7 @@ public class AddReminderActivity extends AppCompatActivity {
                         Category category = (Category) spinCategory.getSelectedItem();
                         int categoryId = category.getId();
                         Reminder reminder = new Reminder(title, description, date,time,categoryId);
-                        category.add(reminder);
+
 
 
                     try{

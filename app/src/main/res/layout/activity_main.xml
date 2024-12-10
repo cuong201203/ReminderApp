@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -20,30 +20,33 @@
         app:titleTextColor="#fff" />
 
 
-        <TableRow
-            android:id="@+id/tb1"
-            android:layout_width="match_parent"
+    <TableRow
+        android:id="@+id/tb1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/toolbar">
+            android:text="Xem theo:"
+            android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Xem theo:"
-                android:textSize="16sp" />
+        <Spinner
+            android:id="@+id/spinCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-            <Spinner
-                android:id="@+id/spinCategory"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+    </TableRow>
 
-        </TableRow>
     <ListView
         android:id="@+id/lvReminder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tb1">
+
     </ListView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -53,8 +56,10 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
-        android:contentDescription="Add Reminder"
-        android:src="@drawable/ic_baseline_add_24" />
+        android:contentDescription="Add Category"
+        android:src="@drawable/ic_baseline_add_24"
+        app:backgroundTint="@color/main_color"
+        app:tint="@color/white" />
 
     <TextView
         android:id="@+id/txtNoResultsForReminder"
@@ -64,7 +69,6 @@
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:visibility="gone" />
-
 
 
 </RelativeLayout>
