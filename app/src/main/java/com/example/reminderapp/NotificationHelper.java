@@ -68,4 +68,3 @@ public class NotificationHelper {
         Log.d("NotificationHelper", "Notification sent: " + title);
     }
 }
-

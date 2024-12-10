@@ -1,6 +1,7 @@
 package com.example.reminderapp.receiver;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,8 +12,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.reminderapp.NotificationHelper;
-import com.example.reminderapp.dao.ReminderDAO;
-import com.example.reminderapp.entity.Reminder;
+import com.example.reminderapp.dao.NotificationDAO;
+import com.example.reminderapp.entity.Notification;
 
 import java.util.Calendar;
 
@@ -23,34 +24,37 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // Lấy thông tin nhắc nhở từ Intent
         int reminderId = intent.getIntExtra("reminderId", -1);
         String title = intent.getStringExtra("reminderTitle");
         String description = intent.getStringExtra("reminderDescription");
+        boolean isSnooze = intent.getBooleanExtra("isSnooze", false);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Log.d("ReminderBroadcastReceiver", "Received reminder with ID: " + reminderId);
         Log.d("ReminderBroadcastReceiver", "Title: " + title);
         Log.d("ReminderBroadcastReceiver", "Description: " + description);
 
         if (ACTION_SNOOZE.equals(intent.getAction())) {
-            // Xử lý hành động nhắc lại
             Log.d("ReminderBroadcastReceiver", "Snooze action received for reminder ID: " + reminderId);
             snoozeNotification(context, reminderId, title, description);
+            notificationManager.cancel(reminderId);
         } else if (ACTION_CONFIRM.equals(intent.getAction())) {
-            // Xử lý hành động OK
             Log.d("ReminderBroadcastReceiver", "Confirm action received for reminder ID: " + reminderId);
-            addReminderToDatabase(context, reminderId, title, description);
+            notificationManager.cancel(reminderId);
+            Toast.makeText(context, "Thông báo đã được xác nhận và lưu vào cơ sở dữ liệu", Toast.LENGTH_SHORT).show();
         } else {
-            // Gửi thông báo nhắc nhở
             NotificationHelper notificationHelper = new NotificationHelper(context);
             notificationHelper.sendNotification(title, description, reminderId);
+            int status = isSnooze ? 1 : 0;
+            addNotificationToDatabase(context, reminderId, title, description, status);
         }
     }
 
     private void snoozeNotification(Context context, int reminderId, String title, String description) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        // Kiểm tra xem có thể lập lịch các báo động chính xác hay không
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (!alarmManager.canScheduleExactAlarms()) {
                 Log.e("ReminderBroadcastReceiver", "Cannot schedule exact alarms. Requesting permission.");
@@ -64,26 +68,38 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
         intent.putExtra("reminderTitle", title);
         intent.putExtra("reminderDescription", description);
         intent.putExtra("reminderId", reminderId);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, reminderId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        intent.putExtra("isSnooze", true);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, reminderId, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, 30); // Nhắc lại sau 30 giây
+        calendar.add(Calendar.MINUTE, 1); // Thêm thời gian nhắc lại là 1 phút
 
         try {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            Log.d("ReminderBroadcastReceiver", "Notification snoozed for 30 seconds");
-
-            // Hiển thị thông báo Toast cho người dùng
-            Toast.makeText(context, "Nhắc nhở sẽ được nhắc lại sau 30 giây", Toast.LENGTH_SHORT).show();
+            Log.d("ReminderBroadcastReceiver", "Notification snoozed for 1 minute");
+            Toast.makeText(context, "Nhắc nhở sẽ được nhắc lại sau 1 phút", Toast.LENGTH_SHORT).show();
         } catch (SecurityException e) {
             Log.e("ReminderBroadcastReceiver", "Failed to schedule exact alarm. Handling SecurityException.", e);
-            // Xử lý ngoại lệ hoặc yêu cầu quyền cần thiết
         }
     }
 
-    private void addReminderToDatabase(Context context, int reminderId, String title, String description) {
-        Log.d("ReminderBroadcastReceiver", "Reminder added to database: " + title);
-        // Hiển thị thông báo Toast cho người dùng
-        Toast.makeText(context, "Nhắc nhở đã được thêm vào cơ sở dữ liệu", Toast.LENGTH_SHORT).show();
+    private void addNotificationToDatabase(Context context, int reminderId, String title, String description, int status) {
+        String date = getCurrentDate();
+        String time = getCurrentTime();
+
+        NotificationDAO notificationDAO = new NotificationDAO(context);
+        Notification notification = new Notification(reminderId, title, description, date, time, status, reminderId);
+        notificationDAO.addNotification(notification);
+        Log.d("ReminderBroadcastReceiver", "Notification added to database: " + title + " with status: " + status);
+    }
+
+    private String getCurrentDate() {
+        Calendar calendar = Calendar.getInstance();
+        return String.format("%02d/%02d/%04d", calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR));
+    }
+
+    private String getCurrentTime() {
+        Calendar calendar = Calendar.getInstance();
+        return String.format("%02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
     }
 }

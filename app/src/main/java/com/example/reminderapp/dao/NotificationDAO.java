@@ -51,12 +51,16 @@ public class NotificationDAO {
     public void addNotification(Notification notification) {
         SQLiteDatabase db = dbUtils.getWritableDatabase();
         ContentValues values = new ContentValues();
+
         values.put("Title", notification.getTitle());
         values.put("Content", notification.getContent());
         values.put("Date", notification.getDate());
-        values.put("Time", notification.getTime()); values.put("Status", notification.getStatus());
+        values.put("Time", notification.getTime());
+        values.put("Status", notification.getStatus());
         values.put("ReminderID", notification.getReminderId());
+
         long result = db.insert("Notification", null, values);
+
         if (result == -1) {
             Log.e("DatabaseError", "Failed to insert notification");
         }

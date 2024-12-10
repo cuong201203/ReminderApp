@@ -104,48 +104,23 @@ public class ReminderDAO {
         values.put("CategoryID", reminder.getCategoryId());
 
         Log.d("ReminderDAO", "Inserting reminder: " + reminder.getTitle());
-        long result = db.insert("Reminder", null, values);
-
         long reminderId = db.insert("Reminder", null, values);
         // Cập nhật lại ID cho reminder
         reminder.setId((int) reminderId);
 
         //thêm vào bảng Notification
         values.clear();
-        values.put("Title", reminder.getTitle());
-        values.put("Content", reminder.getDescription());
-        values.put("Date", reminder.getDate());
-        values.put("Time", reminder.getTime());
-        values.put("Status", 0);
-        values.put("ReminderID", reminder.getId());
         db.insert("Notification", null, values);
-        Log.d("ReminderDAO", "Inserting reminder: " + reminder.getTitle());
         db.close();
 
-        if (result == -1) {
+        if (reminderId == -1) {
             Log.e("ReminderDAO", "Failed to insert reminder");
             throw new RuntimeException("Failed to insert reminder");
         } else {
-            Log.d("ReminderDAO", "Reminder inserted successfully with ID: " + result);
+            Log.d("ReminderDAO", "Reminder inserted successfully with ID: " + reminderId);
         }
-
-        // Tạo và thêm thông báo liên quan đến nhắc nhở
-        Notification notification = new Notification(
-                (int) result,
-                reminder.getTitle(),
-                reminder.getDescription(),
-                reminder.getDate(),
-                reminder.getTime(),
-                0, // Trạng thái mặc định, ví dụ: chưa gửi
-                (int) result
-        );
-
-        Log.d("ReminderDAO", "Creating notification for reminder ID: " + result);
-        NotificationDAO notificationDAO = new NotificationDAO(context);
-        notificationDAO.addNotification(notification);
-
         // Lên lịch thông báo cho nhắc nhở mới
-        Log.d("ReminderDAO", "Scheduling notification for reminder ID: " + result);
+        Log.d("ReminderDAO", "Scheduling notification for reminder ID: " + reminderId);
         scheduleNotification(reminder);
     }
     public void updateReminder(Reminder reminder) {
