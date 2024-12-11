@@ -48,13 +48,30 @@ public class NotificationDAO {
         db.close();
         return notifications;
     }
+    public void addNotification(Notification notification) {
+        SQLiteDatabase db = dbUtils.getWritableDatabase();
+        ContentValues values = new ContentValues();
 
+        values.put("Title", notification.getTitle());
+        values.put("Content", notification.getContent());
+        values.put("Date", notification.getDate());
+        values.put("Time", notification.getTime());
+        values.put("Status", notification.getStatus());
+        values.put("ReminderID", notification.getReminderId());
+
+        long result = db.insert("Notification", null, values);
+
+        if (result == -1) {
+            Log.e("DatabaseError", "Failed to insert notification");
+        }
+    }
     public void deleteAllNotifications() {
         SQLiteDatabase db = this.dbUtils.getWritableDatabase();
         db.execSQL("DELETE FROM Notification"); // Xóa toàn bộ dữ liệu trong bảng
         db.close();
     }
-    
+
+
     public void deleteNotification(int id) {
         SQLiteDatabase db = dbUtils.getWritableDatabase();
         db.delete("Notification", "ID = ?", new String[]{String.valueOf(id)});
@@ -226,7 +243,7 @@ public class NotificationDAO {
 
         // Câu truy vấn sử dụng LIKE để so sánh tháng và năm
         String query = "SELECT * FROM Notification WHERE date LIKE ?";
-        Cursor cursor = db.rawQuery(query, new String[]{ "%" + monthYear });
+        Cursor cursor = db.rawQuery(query, new String[]{"%" + monthYear});
 
         if (cursor != null && cursor.moveToFirst()) {
             do {

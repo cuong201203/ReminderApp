@@ -152,9 +152,6 @@ public class AddReminderActivity extends AppCompatActivity {
                         Category category = (Category) spinCategory.getSelectedItem();
                         int categoryId = category.getId();
                         Reminder reminder = new Reminder(title, description, date,time,categoryId);
-
-
-
                     try{
                         reminderDAO.addReminder(reminder);
                         Toast.makeText(AddReminderActivity.this,"Thêm nhắc nhở thành công",Toast.LENGTH_SHORT).show();

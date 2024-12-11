@@ -1,7 +1,10 @@
 package com.example.reminderapp;
 
+import android.app.AlarmManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -66,7 +69,17 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        reminderDAO = new ReminderDAO(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!canScheduleExactAlarms()) {
+                Intent intent = new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                startActivity(intent);
+            }
+        }
+        ArrayList<Reminder> reminders = reminderDAO.getAllReminders();
+        for (Reminder reminder : reminders) {
+            reminderDAO.scheduleNotification(reminder);
+        }
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getWidgets();
@@ -316,5 +329,13 @@ public class MainActivity extends AppCompatActivity {
         String idString = intent.getStringExtra("category");
         Log.d("AAA", idString +"");
         viewReminder(idString);
+    }
+    private boolean canScheduleExactAlarms() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            return alarmManager.canScheduleExactAlarms();
+        } else {
+            return true;
+        }
     }
 }
