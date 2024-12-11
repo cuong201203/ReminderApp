@@ -243,7 +243,7 @@ public class ListNotificationActivity extends AppCompatActivity {
 
         //Kiểm tra xem có thông báo nào hay không
         if (filteredNotifications.isEmpty()) {
-            txtNoResult.setText("Không có thông báo phù hợp");
+            txtNoResult.setText("Không có thông báo nào");
             txtNoResult.setVisibility(View.VISIBLE);
         } else {
             txtNoResult.setVisibility(View.GONE);
