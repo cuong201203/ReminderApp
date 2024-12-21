@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.reminderapp.NotificationHelper;
 import com.example.reminderapp.dao.NotificationDAO;
+import com.example.reminderapp.dao.ReminderDAO;  // Import ReminderDAO
 import com.example.reminderapp.entity.Notification;
 
 import java.util.Calendar;
@@ -41,7 +42,8 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
         } else if (ACTION_CONFIRM.equals(intent.getAction())) {
             Log.d("ReminderBroadcastReceiver", "Confirm action received for reminder ID: " + reminderId);
             notificationManager.cancel(reminderId);
-            Toast.makeText(context, "Thông báo đã được xác nhận và lưu vào cơ sở dữ liệu", Toast.LENGTH_SHORT).show();
+            deleteReminder(context, reminderId);
+            Toast.makeText(context, "Thông báo đã được xác nhận và nhắc nhở đã bị xóa", Toast.LENGTH_SHORT).show();
         } else {
             NotificationHelper notificationHelper = new NotificationHelper(context);
             notificationHelper.sendNotification(title, description, reminderId);
@@ -52,8 +54,6 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
 
     private void snoozeNotification(Context context, int reminderId, String title, String description) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (!alarmManager.canScheduleExactAlarms()) {
@@ -91,6 +91,12 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
         Notification notification = new Notification(reminderId, title, description, date, time, status, reminderId);
         notificationDAO.addNotification(notification);
         Log.d("ReminderBroadcastReceiver", "Notification added to database: " + title + " with status: " + status);
+    }
+
+    private void deleteReminder(Context context, int reminderId) {
+        ReminderDAO reminderDAO = new ReminderDAO(context);
+        reminderDAO.deleteReminder(reminderId);
+        Log.d("ReminderBroadcastReceiver", "Reminder deleted from database with ID: " + reminderId);
     }
 
     private String getCurrentDate() {
