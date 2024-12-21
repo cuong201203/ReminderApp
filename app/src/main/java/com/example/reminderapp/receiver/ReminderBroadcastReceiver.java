@@ -43,7 +43,7 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
             Log.d("ReminderBroadcastReceiver", "Confirm action received for reminder ID: " + reminderId);
             notificationManager.cancel(reminderId);
             deleteReminder(context, reminderId);
-            Toast.makeText(context, "Thông báo đã được xác nhận và lưu vào cơ sở dữ liệu", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Thông báo đã được xác nhận và nhắc nhở đã bị xóa", Toast.LENGTH_SHORT).show();
         } else {
             NotificationHelper notificationHelper = new NotificationHelper(context);
             notificationHelper.sendNotification(title, description, reminderId);
