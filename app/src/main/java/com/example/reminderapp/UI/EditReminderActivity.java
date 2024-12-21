@@ -101,7 +101,8 @@ public class EditReminderActivity extends AppCompatActivity {
                 DatePickerDialog.OnDateSetListener callback = new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-                        txtEditReminderDate.setText(dayOfMonth+"/"+(month+1)+"/"+year);
+                        String formattedDate = String.format("%02d/%02d/%04d", dayOfMonth, month + 1, year);
+                        txtEditReminderDate.setText(formattedDate);
                     }
                 };
                 DatePickerDialog date = new DatePickerDialog(EditReminderActivity.this,callback,year,month,day);
@@ -129,6 +130,7 @@ public class EditReminderActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
+
         if(bundle!=null){
             int reminderId = bundle.getInt("reminderId");
 
@@ -143,8 +145,23 @@ public class EditReminderActivity extends AppCompatActivity {
 
             String reminderTime = bundle.getString("reminderTime");
             txtEditReminderTime.setText(reminderTime);
-            final int[] categoryId = {bundle.getInt("categoryId")};
-            spinCategory.setSelection(categoryId[0] -1);
+
+            int categoryId = bundle.getInt("categoryId");
+
+            // Tìm chỉ số (position) của categoryId trong categoryList
+            int position = -1;
+            for (int i = 0; i < categories.size(); i++) {
+                if (categories.get(i).getId() == categoryId) {
+                    position = i;
+                    break;
+                }
+            }
+
+            // Nếu tìm thấy vị trí, đặt Spinner vào đúng vị trí đó
+            if (position != -1) {
+                spinCategory.setSelection(position);
+            }
+
 
             btnEditReminder.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -160,7 +177,7 @@ public class EditReminderActivity extends AppCompatActivity {
                             int categoryId = category.getId();
 
                             Reminder reminder = new Reminder(reminderId,title, description, date, time, categoryId);
-                            category.add(reminder);
+
                             reminderDAO.updateReminder(reminder);
                             Toast.makeText(EditReminderActivity.this, "Sửa nhắc nhở thành công", Toast.LENGTH_SHORT).show();
                             finish();

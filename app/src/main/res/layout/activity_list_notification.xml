@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -16,59 +13,45 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="Ứng dụng nhắc nhở"
+        app:title="Quản lý thông báo"
         app:titleTextColor="#fff" />
 
 
     <TableRow
-        android:id="@+id/tb1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
-        android:layout_margin="10dp">
-
+        android:orientation="vertical" >
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Xem theo:"
             android:textSize="16sp" />
 
         <Spinner
-            android:id="@+id/spinCategory"
+            android:id="@+id/spinNotification"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </TableRow>
 
     <ListView
-        android:id="@+id/lvReminder"
+        android:id="@+id/lvNotification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tb1">
-
-    </ListView>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnAddReminderNavigate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="16dp"
-        android:contentDescription="Add Category"
-        android:src="@drawable/ic_baseline_add_24"
-        app:backgroundTint="@color/main_color"
-        app:tint="@color/white" />
+        android:layout_below="@id/toolbar"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        android:paddingBottom="80dp" />
 
     <TextView
-        android:id="@+id/txtNoResultsForReminder"
-        android:layout_width="wrap_content"
+        android:id="@+id/txtNoResult"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:gravity="center"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:visibility="gone" />
 
-
-</RelativeLayout>
+</LinearLayout>

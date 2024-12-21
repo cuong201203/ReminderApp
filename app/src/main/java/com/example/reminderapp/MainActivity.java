@@ -1,8 +1,12 @@
 package com.example.reminderapp;
 
+import android.app.AlarmManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +31,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.reminderapp.UI.AddReminderActivity;
 import com.example.reminderapp.UI.EditReminderActivity;
 import com.example.reminderapp.UI.ListCategoryActivity;
+import com.example.reminderapp.UI.ListNotificationActivity;
 import com.example.reminderapp.adapter.CategoryAdapter;
 import com.example.reminderapp.adapter.ReminderAdapter;
 import com.example.reminderapp.dao.CategoryDAO;
@@ -64,7 +69,17 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        reminderDAO = new ReminderDAO(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!canScheduleExactAlarms()) {
+                Intent intent = new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                startActivity(intent);
+            }
+        }
+        ArrayList<Reminder> reminders = reminderDAO.getAllReminders();
+        for (Reminder reminder : reminders) {
+            reminderDAO.scheduleNotification(reminder);
+        }
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getWidgets();
@@ -98,11 +113,9 @@ public class MainActivity extends AppCompatActivity {
                     doSearch(query);
                     return false;
                 }
-
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     // Gọi hàm xử lý khi văn bản thay đổi
-
                         doSearch(newText);
                     return false;
                 }
@@ -195,19 +208,24 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (itemId == R.id.itemNewestReminderTIme) {
-            Toast.makeText(this, "Thời gian nhắc nhở mới nhất", Toast.LENGTH_SHORT).show();
+            adapter.sortByDateTimeAscending();
+            Toast.makeText(this, "Thời gian mới nhất", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.itemOldestReminderTime) {
-            Toast.makeText(this, "Thời gian nhắc nhở cũ nhất", Toast.LENGTH_SHORT).show();
+            adapter.sortByDateTimeDescending();
+            Toast.makeText(this, "Thời gian cũ nhất", Toast.LENGTH_SHORT).show();
             return true;
-        } else if (itemId == R.id.itemNewestCreatedTime) {
-            Toast.makeText(this, "Thời gian tạo mới nhất", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.itemNameAZ) {
+            adapter.sortByNameAscending();
+            Toast.makeText(this, "Tên A-Z", Toast.LENGTH_SHORT).show();
             return true;
-        } else if (itemId == R.id.itemOldestCreatedTime) {
-            Toast.makeText(this, "Thời gian tạo cũ nhất", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.itemNameZA) {
+            adapter.sortByNameDescending();
+            Toast.makeText(this, "Tên Z-A", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.itemManageNotification) {
-            Toast.makeText(this, "Quản lý thông báo", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, ListNotificationActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -216,13 +234,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadData();
+        loadIntent();
     }
-
-//    public void loadDataByCategory(Category c){
-//        listReminder.clear();
-//        listReminder.addAll(c.getListReminder());
-//        adapter.notifyDataSetChanged();
-//    }
 
     public void loadData(){
         //set adapter cho spinner danh mục
@@ -265,5 +278,64 @@ public class MainActivity extends AppCompatActivity {
                 doEditReminder(reminderSelected);
             }
         });
+
+        //Hiển thị nhắc nhở lên spin ở màn hình chính
+        spinCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedCategory = adapterView.getItemAtPosition(i).toString();
+                int id = categoryDAO.getCategoryIdByTitle(selectedCategory);
+                Log.d("AAA",id+"");
+                // Lọc danh sách nhắc nhở theo danh mục
+                ArrayList<Reminder> filteredReminders = reminderDAO.filterRemindersByCategory(id);
+
+                // Cập nhật danh sách nhắc nhở và thông báo cho Adapter
+                listReminder.clear();
+                listReminder.addAll(filteredReminders);
+
+//                String string ="";
+//                for(Reminder reminder: listReminder){
+//                    string += reminder.getTitle()+ " ";
+//                }
+//                Log.d("AAA",string);
+
+                adapter = new ReminderAdapter(MainActivity.this, R.layout.item_reminder, listReminder);
+                lvReminders.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+    }
+
+    public void viewReminder(String id){
+        int idReminder = categoryDAO.getCategoryIdByTitle(id+"");
+        Log.d("AAA",idReminder+"");
+        spinCategory.setSelection(idReminder-1);// set lai gia tri cua spinner
+        // Lọc danh sách nhắc nhở theo danh mục
+        ArrayList<Reminder> filteredReminders = reminderDAO.filterRemindersByCategory(idReminder);
+        // Cập nhật danh sách nhắc nhở và thông báo cho Adapter
+        listReminder.clear();
+        listReminder.addAll(filteredReminders);
+
+        adapter = new ReminderAdapter(MainActivity.this, R.layout.item_reminder, listReminder);
+        lvReminders.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    public void loadIntent(){
+        Intent intent = getIntent();
+        String idString = intent.getStringExtra("category");
+        Log.d("AAA", idString +"");
+        viewReminder(idString);
+    }
+    private boolean canScheduleExactAlarms() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            return alarmManager.canScheduleExactAlarms();
+        } else {
+            return true;
+        }
     }
 }
