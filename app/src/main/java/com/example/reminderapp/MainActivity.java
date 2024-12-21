@@ -76,10 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         }
-        ArrayList<Reminder> reminders = reminderDAO.getAllReminders();
-        for (Reminder reminder : reminders) {
-            reminderDAO.scheduleNotification(reminder);
-        }
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getWidgets();
