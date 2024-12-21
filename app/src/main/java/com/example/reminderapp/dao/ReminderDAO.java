@@ -145,6 +145,26 @@ public class ReminderDAO {
     }
 
     public void deleteReminder(int id) {
+        // Hủy thông báo đã lên lịch
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, ReminderBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                id,
+                intent,
+                PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        if (pendingIntent != null) {
+            alarmManager.cancel(pendingIntent);
+            pendingIntent.cancel();
+            Log.d("ReminderDAO", "Canceled notification for reminder ID: " + id);
+        } else {
+            Log.d("ReminderDAO", "No notification found for reminder ID: " + id);
+        }
+
+        // Xóa nhắc nhở trong cơ sở dữ liệu
         SQLiteDatabase db = dbUtils.getWritableDatabase();
         db.delete("Notification", "ReminderID = ?", new String[]{String.valueOf(id)});
         db.delete("Reminder", "ID = ?", new String[]{String.valueOf(id)});
