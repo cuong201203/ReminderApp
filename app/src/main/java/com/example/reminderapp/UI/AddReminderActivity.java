@@ -63,6 +63,7 @@ public class AddReminderActivity extends AppCompatActivity {
 
 
         getWidget();
+        setUpData();
         setUpCategorySpinner();
         doSomeThing();
 
@@ -76,6 +77,7 @@ public class AddReminderActivity extends AppCompatActivity {
         editAddReminderDescription = findViewById(R.id.editAddReminderDescription);
 
         txtAddReminderDate = findViewById(R.id.txtAddReminderDate);
+
         txtAddReminderTime = findViewById(R.id.txtAddReminderTime);
 
         btnAddReminderDate = findViewById(R.id.btnAddReminderDate);
@@ -96,6 +98,14 @@ public class AddReminderActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+    public void setUpData(){
+        cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        String formattedDate = String.format("%02d/%02d/%04d", day, month + 1, year);
+        txtAddReminderDate.setText(formattedDate);
     }
     public void doSomeThing() {
         //Xử lý button Date chọn ngày
@@ -152,9 +162,6 @@ public class AddReminderActivity extends AppCompatActivity {
                         Category category = (Category) spinCategory.getSelectedItem();
                         int categoryId = category.getId();
                         Reminder reminder = new Reminder(title, description, date,time,categoryId);
-
-
-
                     try{
                         reminderDAO.addReminder(reminder);
                         Toast.makeText(AddReminderActivity.this,"Thêm nhắc nhở thành công",Toast.LENGTH_SHORT).show();
