@@ -21,6 +21,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.example.reminderapp.R;
 import com.example.reminderapp.adapter.NotificationAdapter;
@@ -44,13 +47,16 @@ public class ListNotificationActivity extends AppCompatActivity {
     TextView txtNoResult;
     MenuItem searchItem;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_list_notification);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -76,7 +82,6 @@ public class ListNotificationActivity extends AppCompatActivity {
                 v.requestLayout();
             }
         });
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -243,7 +248,7 @@ public class ListNotificationActivity extends AppCompatActivity {
 
         //Kiểm tra xem có thông báo nào hay không
         if (filteredNotifications.isEmpty()) {
-            txtNoResult.setText("Không có thông báo phù hợp");
+            txtNoResult.setText("Không có thông báo nào");
             txtNoResult.setVisibility(View.VISIBLE);
         } else {
             txtNoResult.setVisibility(View.GONE);

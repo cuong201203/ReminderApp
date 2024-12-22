@@ -9,8 +9,6 @@ import android.util.Log;
 import com.example.reminderapp.DBUtils.DatabaseUtils;
 import com.example.reminderapp.entity.Notification;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -116,43 +114,17 @@ public class NotificationDAO {
         return notificationList;
     }
 
-    public String getReminderTitleById(int reminderId) {
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        String reminderTitle = "";
-
-        try {
-            db = dbUtils.getReadableDatabase(); // Mở cơ sở dữ liệu
-            cursor = db.rawQuery("SELECT Title FROM Reminder WHERE ID = ?", new String[]{String.valueOf(reminderId)});
-
-            if (cursor.moveToFirst()) {
-                reminderTitle = cursor.getString(0);
-            } else {
-                Log.e("Database", "No reminder found with ID: " + reminderId);
-            }
-        } catch (Exception e) {
-            Log.e("DatabaseError", "Error fetching reminder title", e);
-        } finally {
-            if (cursor != null) {
-                cursor.close(); // Đóng con trỏ
-            }
-            if (db != null) {
-                db.close(); // Đóng cơ sở dữ liệu
-            }
-        }
-
-        return reminderTitle;
-    }
     public ArrayList<Notification> getNotificationsByDate() {
-        // Lấy ngày hôm nay dưới dạng "dd-MM-yyyy"
-        String currentDate = new SimpleDateFormat("d/M/yyyy", Locale.getDefault()).format(new Date());
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH trả về từ 0-11
+        int year = calendar.get(Calendar.YEAR);
+
+        String currentDate = String.format("%02d/%02d/%04d", day, month, year);
 
         SQLiteDatabase db = this.dbUtils.getReadableDatabase();
-
-        // Truy vấn thông báo có ngày bằng ngày hôm nay
         Cursor cursor = db.rawQuery("SELECT * FROM Notification WHERE date = ?", new String[]{currentDate});
         ArrayList<Notification> notifications = new ArrayList<>();
-
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 Notification notification = new Notification(
@@ -175,37 +147,28 @@ public class NotificationDAO {
     public ArrayList<Notification> getNotificationsByWeek() {
         ArrayList<Notification> notifications = new ArrayList<>();
 
-        // Cấu hình Calendar với đầu tuần là Thứ Hai
-        Calendar calendar = Calendar.getInstance(Locale.getDefault());
-        calendar.setFirstDayOfWeek(Calendar.MONDAY);
-
-        // Tính tuần hiện tại và năm hiện tại
-        int currentWeek = calendar.get(Calendar.WEEK_OF_YEAR);
-        int currentYear = calendar.get(Calendar.YEAR);
+        Calendar currentCalendar = Calendar.getInstance();
+        currentCalendar.setFirstDayOfWeek(Calendar.MONDAY);
+        int currentWeek = currentCalendar.get(Calendar.WEEK_OF_YEAR);
+        int currentYear = currentCalendar.get(Calendar.YEAR);
 
         SQLiteDatabase db = this.dbUtils.getReadableDatabase();
-
-        // Truy vấn tất cả các thông báo
         Cursor cursor = db.rawQuery("SELECT * FROM Notification", null);
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                // Lấy giá trị Date từ cursor
-                String dateText = cursor.getString(3); // Cột Date
+                String dateText = cursor.getString(3);
+                String[] dateParts = dateText.split("/");
+                if (dateParts.length == 3) {
+                    int day = Integer.parseInt(dateParts[0]);
+                    int month = Integer.parseInt(dateParts[1]) - 1; // Tháng trong Calendar bắt đầu từ 0
+                    int year = Integer.parseInt(dateParts[2]);
 
-                // Phân tích Date (định dạng d/M/yyyy)
-                try {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("d/M/yyyy", Locale.getDefault());
-                    Date date = dateFormat.parse(dateText);
-
-                    // Tính tuần và năm của giá trị Date
-                    Calendar dateCalendar = Calendar.getInstance(Locale.getDefault());
+                    Calendar dateCalendar = Calendar.getInstance();
                     dateCalendar.setFirstDayOfWeek(Calendar.MONDAY);
-                    dateCalendar.setTime(date);
-                    int weekOfYear = dateCalendar.get(Calendar.WEEK_OF_YEAR);
-                    int year = dateCalendar.get(Calendar.YEAR);
+                    dateCalendar.set(year, month, day);
 
-                    // So sánh tuần và năm
-                    if (weekOfYear == currentWeek && year == currentYear) {
+                    if (dateCalendar.get(Calendar.WEEK_OF_YEAR) == currentWeek &&
+                            dateCalendar.get(Calendar.YEAR) == currentYear) {
                         Notification notification = new Notification(
                                 cursor.getInt(0),
                                 cursor.getString(1),
@@ -217,11 +180,8 @@ public class NotificationDAO {
                         );
                         notifications.add(notification);
                     }
-                } catch (ParseException e) {
-                    Log.e("ParseError", "Invalid date format: " + dateText);
                 }
             } while (cursor.moveToNext());
-
         }
         cursor.close();
         db.close();
@@ -233,18 +193,12 @@ public class NotificationDAO {
 
         // Lấy tháng và năm hiện tại
         Calendar calendar = Calendar.getInstance();
-        int currentMonth = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH bắt đầu từ 0
+        int currentMonth = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH từ 0-11
         int currentYear = calendar.get(Calendar.YEAR);
+        String monthYear = String.format("%02d/%04d", currentMonth, currentYear);
 
-        String monthYear = String.format("%d/%04d", currentMonth, currentYear);
-
-        // Truy vấn SQLite
         SQLiteDatabase db = this.dbUtils.getReadableDatabase();
-
-        // Câu truy vấn sử dụng LIKE để so sánh tháng và năm
-        String query = "SELECT * FROM Notification WHERE date LIKE ?";
-        Cursor cursor = db.rawQuery(query, new String[]{"%" + monthYear});
-
+        Cursor cursor = db.rawQuery("SELECT * FROM Notification WHERE date LIKE ?", new String[]{"%/" + monthYear});
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 Notification notification = new Notification(
