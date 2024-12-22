@@ -30,39 +30,45 @@ public class ReminderDAO {
 
     // Lấy toàn bộ danh sách nhắc nhở
     public ArrayList<Reminder> getAllReminders() {
+        //Tạo danh sách chứa nhắc nhở
         ArrayList<Reminder> reminders = new ArrayList<>();
+        // Mở kết nối cơ sở dữ liệu để đọc
         SQLiteDatabase db = dbUtils.getReadableDatabase();
+        // Thực thi truy vấn SQL để lấy tất cả các nhắc nhở từ bảng Reminder
         Cursor cursor = db.rawQuery("SELECT * FROM Reminder", null);
-
+        // Nếu có dữ liệu, di chuyển con trỏ đến dòng đầu tiên
         if (cursor.moveToFirst()) {
             do {
+                // Tạo đối tượng Reminder từ dữ liệu trong cursor
                 Reminder reminder = new Reminder(
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getString(3),
-                        cursor.getString(4),
-                        cursor.getInt(5)
+                        cursor.getString(1), // Title
+                        cursor.getString(2),// Description
+                        cursor.getString(3),// Time
+                        cursor.getString(4),// Date
+                        cursor.getInt(5) // categoryId
                 );
-                reminder.setId(cursor.getInt(0));
+                reminder.setId(cursor.getInt(0));// ID
                 reminders.add(reminder);
-            } while (cursor.moveToNext());
+            } while (cursor.moveToNext());//Lặp qua tất cả các dòng
         }
-        cursor.close();
-        db.close();
+        cursor.close();//Đóng con trỏ
+        db.close();//Đóng cơ sở dữ liệu
+        //Trả về danh sách nhắc nhở trong cơ sở dữ liệu
         return reminders;
     }
 
     // Tìm kiếm nhắc nhở theo title
     public ArrayList<Reminder> searchReminder(String infor) {
+        //Tạo danh sách chứa nhắc nhở tìm thấy
         ArrayList<Reminder> reminderList = new ArrayList<>();
         SQLiteDatabase db = null;
         Cursor cursor = null;
-
         try {
+            //Tạo truy vấn và truy cập cơ sở dữ liệu để đọc
             String query = "SELECT * FROM Reminder WHERE Title LIKE ?";
             db = dbUtils.getReadableDatabase();
             cursor = db.rawQuery(query, new String[]{"%" + infor + "%"});
-
+            //Nếu con trỏ khác rỗng thì di chuyển đến dòng đầu tiên
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     // Tạo đối tượng Reminder từ dữ liệu trong cursor
@@ -88,7 +94,7 @@ public class ReminderDAO {
                 db.close();
             }
         }
-
+        //Trả về danh sách nhắc nhở tìm theo tiêu đề
         return reminderList;
     }
 
@@ -108,9 +114,6 @@ public class ReminderDAO {
         // Cập nhật lại ID cho reminder
         reminder.setId((int) reminderId);
 
-        //thêm vào bảng Notification
-        values.clear();
-        db.insert("Notification", null, values);
         db.close();
 
         if (reminderId == -1) {
@@ -133,16 +136,46 @@ public class ReminderDAO {
         values.put("CategoryId", reminder.getCategoryId());
         db.update("Reminder", values, "ID = ?", new String[]{String.valueOf(reminder.getId())});
 
-        //sửa bảng Notification
-        values.clear();
-        values.put("Title", reminder.getTitle());
-        values.put("Content", reminder.getDescription());
-        values.put("Date", reminder.getDate());
-        values.put("Time", reminder.getTime());
-        db.update("Notification", values, "ReminderID = ?", new String[]{String.valueOf(reminder.getId())});
+        cancelNotification(reminder.getId());
 
+        // Kiểm tra nếu thời gian mới lớn hơn thời gian hiện tại, lên lịch lại
+        if (isFutureTime(reminder.getDate(), reminder.getTime())) {
+            scheduleNotification(reminder);
+        } else {
+            Log.d("ReminderDAO", "Notification not scheduled as the time is in the past.");
+        }
         db.close();
     }
+    private boolean isFutureTime(String date, String time) {
+        try {
+            Calendar current = Calendar.getInstance();
+            // Tách ngày và giờ từ chuỗi
+            int year = Integer.parseInt(date.substring(6, 10));
+            int month = Integer.parseInt(date.substring(3, 5)) - 1; // Tháng bắt đầu từ 0
+            int day = Integer.parseInt(date.substring(0, 2));
+            int hour = Integer.parseInt(time.substring(0, 2));
+            int minute = Integer.parseInt(time.substring(3, 5));
+
+            Calendar reminderTime = Calendar.getInstance();
+            reminderTime.set(year, month, day, hour, minute, 0);
+
+            // So sánh thời gian
+            return reminderTime.after(current);
+        } catch (Exception e) {
+            Log.e("ReminderDAO", "Error parsing date/time: " + e.getMessage());
+            return false;
+        }
+    }
+    private void cancelNotification(int reminderId) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, ReminderBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, reminderId, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE);
+        if (alarmManager != null && pendingIntent != null) {
+            alarmManager.cancel(pendingIntent);
+            Log.d("ReminderDAO", "Notification canceled for ID: " + reminderId);
+        }
+    }
+
 
     public void deleteReminder(int id) {
         // Hủy thông báo đã lên lịch
@@ -166,7 +199,6 @@ public class ReminderDAO {
 
         // Xóa nhắc nhở trong cơ sở dữ liệu
         SQLiteDatabase db = dbUtils.getWritableDatabase();
-        db.delete("Notification", "ReminderID = ?", new String[]{String.valueOf(id)});
         db.delete("Reminder", "ID = ?", new String[]{String.valueOf(id)});
         db.close();
     }
@@ -204,7 +236,6 @@ public class ReminderDAO {
         ArrayList<Reminder> filteredReminders = new ArrayList<>();
         SQLiteDatabase db = null;
         Cursor cursor = null;
-
         if (id == 1) {
             return getAllReminders();// Mặc định thì trả về tất cả nhắc nhở
         } else {
@@ -238,11 +269,8 @@ public class ReminderDAO {
                     db.close();
                 }
             }
-
             return filteredReminders;
         }
-
-
     }
 
 
@@ -262,8 +290,8 @@ public class ReminderDAO {
         intent.putExtra("reminderTitle", reminder.getTitle());
         intent.putExtra("reminderDescription", reminder.getDescription());
         intent.putExtra("reminderId", reminder.getId());
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, reminder.getId(), intent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, reminder.getId(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        //PendingIntent pendingIntent = PendingIntent.getBroadcast(context, reminder.getId(), intent, PendingIntent.FLAG_IMMUTABLE);
 
         // Kiểm tra độ dài chuỗi Date và Time trước khi sử dụng substring
         String date = reminder.getDate();
