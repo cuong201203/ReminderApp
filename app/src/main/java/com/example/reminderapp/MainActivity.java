@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     Spinner spinCategory;
 
-    MenuItem searchItemReminder, deleteReminderItem;
+    MenuItem searchItemReminder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             });
 
             // Thiết lập một số thuộc tính khác nếu cần
-            searchView.setQueryHint("Search reminders..."); // Gợi ý trong ô tìm kiếm
+            searchView.setQueryHint("Tìm kiếm nhắc nhở..."); // Gợi ý trong ô tìm kiếm
             searchView.setIconifiedByDefault(false); // Không thu gọn SearchView ban đầu
         }
         return true;

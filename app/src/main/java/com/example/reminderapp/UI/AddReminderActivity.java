@@ -61,13 +61,10 @@ public class AddReminderActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-
         getWidget();
         setUpData();
         setUpCategorySpinner();
         doSomeThing();
-
-
     }
 
 
