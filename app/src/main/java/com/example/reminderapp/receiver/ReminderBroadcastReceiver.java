@@ -11,9 +11,10 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.reminderapp.dao.ReminderDAO;
+import com.example.reminderapp.MainActivity;
 import com.example.reminderapp.NotificationHelper;
 import com.example.reminderapp.dao.NotificationDAO;
+import com.example.reminderapp.dao.ReminderDAO;
 import com.example.reminderapp.entity.Notification;
 
 import java.util.Calendar;
@@ -44,6 +45,7 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
             notificationManager.cancel(reminderId);
             deleteReminder(context, reminderId);
             Toast.makeText(context, "Thông báo đã được xác nhận và nhắc nhở đã bị xóa", Toast.LENGTH_SHORT).show();
+            ((MainActivity) context).loadData();
         } else {
             NotificationHelper notificationHelper = new NotificationHelper(context);
             notificationHelper.sendNotification(title, description, reminderId);
