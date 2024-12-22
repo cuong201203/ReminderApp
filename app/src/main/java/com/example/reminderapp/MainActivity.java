@@ -1,9 +1,11 @@
 package com.example.reminderapp;
 
 import android.app.AlarmManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +29,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.reminderapp.UI.AddReminderActivity;
 import com.example.reminderapp.UI.EditReminderActivity;
@@ -334,5 +337,31 @@ public class MainActivity extends AppCompatActivity {
         } else {
             return true;
         }
+    }
+    
+    private BroadcastReceiver reminderDeletedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if ("ACTION_REMINDER_DELETED".equals(intent.getAction())) {
+                int reminderId = intent.getIntExtra("reminderId", -1);
+                Log.d("MainActivity", "Reminder deleted with ID: " + reminderId);
+                // Tải lại danh sách Reminder
+                loadData();
+            }
+        }
+    };
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Đăng ký BroadcastReceiver
+        LocalBroadcastManager.getInstance(this).registerReceiver(reminderDeletedReceiver,
+                new IntentFilter("ACTION_REMINDER_DELETED"));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Hủy đăng ký BroadcastReceiver
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(reminderDeletedReceiver);
     }
 }
