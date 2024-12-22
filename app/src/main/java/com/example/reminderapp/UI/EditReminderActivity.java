@@ -156,19 +156,16 @@ public class EditReminderActivity extends AppCompatActivity {
                     break;
                 }
             }
-
             // Nếu tìm thấy vị trí, đặt Spinner vào đúng vị trí đó
             if (position != -1) {
                 spinCategory.setSelection(position);
             }
-
 
             btnEditReminder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (validateInputs()) {
                         try {
-
                             String title = editEditReminderTitle.getText().toString();
                             String description = editEditReminderDescription.getText().toString();
                             String date = txtEditReminderDate.getText().toString();
@@ -188,11 +185,6 @@ public class EditReminderActivity extends AppCompatActivity {
                     }
                 }
             });
-
         }
-
-
-
-
     }
 }
