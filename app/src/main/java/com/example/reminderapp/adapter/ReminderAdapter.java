@@ -50,7 +50,7 @@ public class ReminderAdapter extends ArrayAdapter {
             final TextView txtReminderDate = convertView.findViewById(R.id.txtAddReminderDate);
             final TextView txtReminderTime = convertView.findViewById(R.id.txtAddReminderTime);
             final TextView txtReminderCategory = convertView.findViewById(R.id.txtReminderCategory);
-
+            //Gán dữ liệu hiển thị lên màn hình
             txtReminderTitle.setText(reminder.getTitle()+"");
             txtReminderDescription.setText(reminder.getDescription()+"");
             txtReminderDate.setText(reminder.getDate()+"");

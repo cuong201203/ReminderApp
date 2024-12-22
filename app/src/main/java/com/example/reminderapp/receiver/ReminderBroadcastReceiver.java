@@ -11,6 +11,8 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.example.reminderapp.dao.ReminderDAO;
 import com.example.reminderapp.NotificationHelper;
 import com.example.reminderapp.dao.NotificationDAO;
@@ -99,6 +101,10 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
         ReminderDAO reminderDAO = new ReminderDAO(context);
         reminderDAO.deleteReminder(reminderId);
         Log.d("ReminderBroadcastReceiver", "Reminder deleted from database with ID: " + reminderId);
+
+        Intent intent = new Intent("ACTION_REMINDER_DELETED");
+        intent.putExtra("reminderId", reminderId);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
     private String getCurrentDate() {
