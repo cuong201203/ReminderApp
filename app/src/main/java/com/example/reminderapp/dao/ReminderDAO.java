@@ -141,8 +141,48 @@ public class ReminderDAO {
         values.put("Time", reminder.getTime());
         db.update("Notification", values, "ReminderID = ?", new String[]{String.valueOf(reminder.getId())});
 
+        cancelNotification(reminder.getId());
+
+        // Kiểm tra nếu thời gian mới lớn hơn thời gian hiện tại, lên lịch lại
+        if (isFutureTime(reminder.getDate(), reminder.getTime())) {
+            scheduleNotification(reminder);
+        } else {
+            Log.d("ReminderDAO", "Notification not scheduled as the time is in the past.");
+        }
         db.close();
     }
+    private boolean isFutureTime(String date, String time) {
+        try {
+            Calendar current = Calendar.getInstance();
+
+            // Tách ngày và giờ từ chuỗi
+            int year = Integer.parseInt(date.substring(6, 10));
+            int month = Integer.parseInt(date.substring(3, 5)) - 1; // Tháng bắt đầu từ 0
+            int day = Integer.parseInt(date.substring(0, 2));
+            int hour = Integer.parseInt(time.substring(0, 2));
+            int minute = Integer.parseInt(time.substring(3, 5));
+
+            Calendar reminderTime = Calendar.getInstance();
+            reminderTime.set(year, month, day, hour, minute, 0);
+
+            // So sánh thời gian
+            return reminderTime.after(current);
+        } catch (Exception e) {
+            Log.e("ReminderDAO", "Error parsing date/time: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private void cancelNotification(int reminderId) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, ReminderBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, reminderId, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE);
+        if (alarmManager != null && pendingIntent != null) {
+            alarmManager.cancel(pendingIntent);
+            Log.d("ReminderDAO", "Notification canceled for ID: " + reminderId);
+        }
+    }
+
 
     public void deleteReminder(int id) {
         // Hủy thông báo đã lên lịch
@@ -262,8 +302,8 @@ public class ReminderDAO {
         intent.putExtra("reminderTitle", reminder.getTitle());
         intent.putExtra("reminderDescription", reminder.getDescription());
         intent.putExtra("reminderId", reminder.getId());
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, reminder.getId(), intent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, reminder.getId(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        //PendingIntent pendingIntent = PendingIntent.getBroadcast(context, reminder.getId(), intent, PendingIntent.FLAG_IMMUTABLE);
 
         // Kiểm tra độ dài chuỗi Date và Time trước khi sử dụng substring
         String date = reminder.getDate();
