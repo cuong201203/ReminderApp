@@ -114,9 +114,6 @@ public class ReminderDAO {
         // Cập nhật lại ID cho reminder
         reminder.setId((int) reminderId);
 
-        //thêm vào bảng Notification
-        values.clear();
-        db.insert("Notification", null, values);
         db.close();
 
         if (reminderId == -1) {
@@ -138,14 +135,6 @@ public class ReminderDAO {
         values.put("Time", reminder.getTime());
         values.put("CategoryId", reminder.getCategoryId());
         db.update("Reminder", values, "ID = ?", new String[]{String.valueOf(reminder.getId())});
-
-        //sửa bảng Notification
-        values.clear();
-        values.put("Title", reminder.getTitle());
-        values.put("Content", reminder.getDescription());
-        values.put("Date", reminder.getDate());
-        values.put("Time", reminder.getTime());
-        db.update("Notification", values, "ReminderID = ?", new String[]{String.valueOf(reminder.getId())});
 
         cancelNotification(reminder.getId());
 
@@ -210,7 +199,6 @@ public class ReminderDAO {
 
         // Xóa nhắc nhở trong cơ sở dữ liệu
         SQLiteDatabase db = dbUtils.getWritableDatabase();
-        db.delete("Notification", "ReminderID = ?", new String[]{String.valueOf(id)});
         db.delete("Reminder", "ID = ?", new String[]{String.valueOf(id)});
         db.close();
     }
