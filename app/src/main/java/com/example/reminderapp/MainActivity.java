@@ -364,4 +364,8 @@ public class MainActivity extends AppCompatActivity {
         // Hủy đăng ký BroadcastReceiver
         LocalBroadcastManager.getInstance(this).unregisterReceiver(reminderDeletedReceiver);
     }
+    public void onReminderDeleted() {
+        loadData();
+    }
+
 }
